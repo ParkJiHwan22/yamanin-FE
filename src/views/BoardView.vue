@@ -19,23 +19,59 @@
                     <h1>총 N개의 게시물이 검색되었습니다.</h1>
                 </div>
                 <hr>
-                <div class="h-96 bg-black m-5">
-                    <h2 class="text-xl font-medium text-gray-100">보드뷰</h2>
+
+                <div class="grid grid-cols-4 gap-2 p-2 m-5 rounded-lg border-2">
+                    <div class="col-span-1">
+                        <div class="space-x-5">
+                            <span>5월 9일 18시 30분</span>
+                            <span class="color-pink-bg text-white mx-2 px-3 py-2 rounded-lg">D - 2</span>
+                        </div>
+                        <p>LG vs 두산</p>
+                        <p>잠실종합야구장</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p>제목</p>
+                    </div>
+                    <div class="col-span-1">
+                        <p>분류</p>
+                    </div>
                 </div>
 
-                <div class="h-20"></div>
-
-                <div class="h-96 bg-gradient-to-r from-cyan-500 to-blue-500 m-5">
-                    <h2 class="text-xl font-medium text-gray-100">보드뷰</h2>
+                <div class="grid grid-cols-4 gap-2 p-2 m-5 rounded-lg border-2">
+                    <div class="col-span-1">
+                        <div class="space-x-5">
+                            <span>5월 9일 18시 30분</span>
+                            <span class="color-pink-bg text-white mx-2 px-3 py-2 rounded-lg">D - 2</span>
+                        </div>
+                        <p>LG vs 두산</p>
+                        <p>잠실종합야구장</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p>제목</p>
+                    </div>
+                    <div class="col-span-1">
+                        <p>분류</p>
+                    </div>
                 </div>
 
-                <div class="h-20"></div>
-
-                <div class="h-96 bg-gradient-to-r from-cyan-500 to-blue-500 m-5">
-                    <h2 class="text-xl font-medium text-gray-100">보드뷰</h2>
+                <div class="grid grid-cols-4 gap-2 p-2 m-5 rounded-lg border-2">
+                    <div class="col-span-1">
+                        <div class="space-x-5">
+                            <span>5월 9일 18시 30분</span>
+                            <span class="color-pink-bg text-white mx-2 px-3 py-2 rounded-lg">D - 2</span>
+                        </div>
+                        <p>LG vs 두산</p>
+                        <p>잠실종합야구장</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p>제목</p>
+                    </div>
+                    <div class="col-span-1">
+                        <p>분류</p>
+                    </div>
                 </div>
-
-                <div class="h-20"></div>
+                
+                <hr>
             </div>
 
 
