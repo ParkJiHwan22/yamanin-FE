@@ -3,3 +3,15 @@ body {
     font-weight: 700;
     font-style: normal;
   }
+
+.color-navy {
+  color:#2C333E;
+}
+
+.color-navy-bg {
+  background-color:#2C333E;
+}
+
+.color-gray-bg {
+  background-color: #D9D9D9;
+}
