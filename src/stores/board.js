@@ -6,8 +6,6 @@ import router from '@/router'
 const REST_BOARD_API = `http://localhost:8080/api-postItems`
 
 export const useBoardStore = defineStore('board', () => {
-
-
   const createBoard = function (board) {
     axios({
       url: REST_BOARD_API,
@@ -15,8 +13,7 @@ export const useBoardStore = defineStore('board', () => {
       data: board
     })
       .then(() => {
-        router.push({name: 'BoardList'})
-      })
+        router.push({ name: 'boardList' })      })
       .catch((err) => {
       console.log(err)
     })
@@ -61,4 +58,3 @@ export const useBoardStore = defineStore('board', () => {
 
   return { createBoard, boardList, getBoardList, board, getBoard, updateBoard, searchBoardList}
 })
-

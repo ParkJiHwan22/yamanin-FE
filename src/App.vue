@@ -3,7 +3,9 @@
   <!-- <div class="flex justify-center min-h-screen"> -->
     <!-- <div class="w-3/4"> -->
     <div>
-      <TheHeaderNav />
+      <div class="pb-20">
+        <TheHeaderNav />
+      </div>
       <RouterView />
       <TheFooterNav />
     </div>
