@@ -38,9 +38,9 @@
               </tr>
               <tr class="animate-fade-in-up delay-200 hover:bg-gray-100 transition-colors duration-300">
                 <td class="py-4 px-6 border-b text-left">2024년 5월</td>
-                <td class="py-4 px-6 border-b text-right">64경기</td>
-                <td class="py-4 px-6 border-b text-right">14,974명</td>
-                <td class="py-4 px-6 border-b text-right">958,366명</td>
+                <td class="py-4 px-6 border-b text-right">74경기</td>
+                <td class="py-4 px-6 border-b text-right">15,470명</td>
+                <td class="py-4 px-6 border-b text-right">1,144,804명</td>
               </tr>
             </tbody>
           </table>

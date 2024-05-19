@@ -37,9 +37,6 @@ export const useBoardStore = defineStore('board', () => {
     })
   }
 
-  console.log("board")
-  console.log(board)
-
   const updateBoard = function () {
     axios.put(REST_BOARD_API, board.value)
       .then(() => {
