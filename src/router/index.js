@@ -2,11 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import GuideView from '@/views/GuideView.vue'
 import BoardView from '@/views/BoardView.vue'
+import MyPageView from '@/views/MyPageView.vue'
 
 import BoardCreate from '@/components/board/BoardCreate.vue'
 import BoardList from '@/components/board/BoardList.vue'
 import BoardUpdate from '@/components/board/BoardUpdate.vue'
 import BoardDetail from '@/components/board/BoardDetail.vue'
+import UserTable from '@/components/user/UserTable.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +47,18 @@ const router = createRouter({
           path: 'update',
           name: 'boardUpdate',
           component: BoardUpdate
+        },
+      ]
+    },
+    {
+      path: '/mypage',
+      name: 'myPage',
+      component: MyPageView,
+      children: [
+        {
+          path: ':id',
+          name: 'userTable',
+          component: UserTable
         },
       ]
     },
