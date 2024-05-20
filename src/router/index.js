@@ -2,8 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import GuideView from '@/views/GuideView.vue'
 import BoardView from '@/views/BoardView.vue'
-import LoginView from '@/views/LoginView.vue'
+import GameInfoView from '@/views/GameInfoView.vue'
 // import MyPageView from '@/views/MyPageView.vue'
+
 
 import BoardCreate from '@/components/board/BoardCreate.vue'
 import BoardList from '@/components/board/BoardList.vue'
@@ -64,9 +65,9 @@ const router = createRouter({
     //   ]
     // },
     {
-      path: '/login',
-      name: 'login',
-      component: LoginView
+      path: '/gameinfo',
+      name: 'gameInfo',
+      component: GameInfoView
     },
   ]
 })

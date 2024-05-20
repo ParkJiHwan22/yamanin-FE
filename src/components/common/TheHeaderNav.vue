@@ -8,7 +8,7 @@
             <div class="flex justify-between space-x-8 pt-3">
                 <RouterLink to="/guide">서비스 소개</RouterLink>
                 <RouterLink :to="{ name: 'boardList' }">모집 게시판</RouterLink>
-                <p>경기 일정</p>
+                <RouterLink to="/gameinfo">경기 일정</RouterLink>
             </div>
 
             <div class="flex justify-between pt-2 pe-4">
