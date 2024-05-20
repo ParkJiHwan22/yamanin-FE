@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div>
         <RouterView />
     </div>
@@ -12,4 +12,4 @@
 <style scoped>
 
 </style>
-  
+   -->
