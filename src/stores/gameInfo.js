@@ -17,8 +17,6 @@ export const useGameInfoStore = defineStore('gameInfo', () => {
     }
   };
 
-  console.log(gameInfos)
-
   const fetchGameInfoById = async (gameId) => {
     try {
       const response = await axios.get(`${API_URL}/${gameId}`);

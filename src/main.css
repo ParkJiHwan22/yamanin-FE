@@ -9,6 +9,7 @@ body {
 }
 
 .color-navy-bg {
+  /* background-color:#000080; */
   background-color:#2C333E;
 }
 
@@ -18,12 +19,15 @@ body {
 
 .color-pink-bg {
   background-color: #FF6666;
+  /* background-color: #ff69b4; */
 }
 
 .color-pink-text {
   color: #FF6666;
+  /* color: #ff69b4; */
 }
 
 .color-navy-text {
-  color: #2C333E;
+  /* color: #2C333E; */
+  color: #000080;
 }
