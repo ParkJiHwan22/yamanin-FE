@@ -7,29 +7,17 @@ const API_URL = `http://localhost:8080/api/gameinfos`;
 
 export const useGameInfoStore = defineStore('gameInfo', () => {
   const gameInfos = ref([]);
-  const allGameDetails = ref({});
-
-  // const fetchAllGameInfos = async () => {
-  //   try {
-  //     const response = await axios.get(`${API_URL}/`)
-  //     gameInfos.value = response.data
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
 
   const fetchAllGameInfos = async () => {
     try {
       const response = await axios.get(`${API_URL}/`);
       gameInfos.value = response.data;
-      allGameDetails.value = { count: response.data.length, games: response.data };
     } catch (err) {
       console.error('Failed to fetch game infos:', err);
     }
   };
 
   console.log(gameInfos)
-  console.log(allGameDetails)
 
   const fetchGameInfoById = async (gameId) => {
     try {
@@ -68,7 +56,6 @@ export const useGameInfoStore = defineStore('gameInfo', () => {
 
   return {
     gameInfos,
-    allGameDetails,
     fetchAllGameInfos,
     fetchGameInfoById,
     addGameInfo,

@@ -1,4 +1,17 @@
 <template>
+    <div class="flex justify-center space-x-20 pt-10">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/LT.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/HT.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/SS.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/NC.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/OB.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/LG.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/WO.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/SK.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/HH.png?type=f108_108" alt="" width="40" height="40">
+      <img src="https://sports-phinf.pstatic.net/team/kbo/default/KT.png?type=f108_108" alt="" width="40" height="40">
+    </div>
+
   <div class="min-h-screen bg-gray-100 text-gray-800">
     <!-- Introduction Section -->
     <section class="bg-white py-48">
@@ -7,7 +20,7 @@
         <p class="mt-6 text-gray-700 animate-fade-in-up delay-100">야구 경기를 함께 즐길 친구를 찾고 새로운 추억을 쌓아보세요! 표를 구하지 못했거나 혼자 가기 어려운 상황에서도 손쉽게 응원 친구를 찾을 수 있습니다. HOST와 GUEST로 나뉘어 표를 공유하고, 서로의 매너 평가를 통해 신뢰를 쌓는 안전한 서비스입니다. 다양한 직관 경험을 제공하는 야만인에서 더 나은 야구 관람을 경험해보세요!</p>
       </div>
     </section>
-
+    
     <!-- Stats Section -->
     <section class="py-48 bg-gray-100">
       <div class="container mx-auto px-6 text-center">
@@ -111,7 +124,6 @@
     opacity: 1;
   }
 }
-
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease-out forwards;
 }
