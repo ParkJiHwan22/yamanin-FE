@@ -1,13 +1,19 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+import router from './router';
+import './main.css'; // main.css 파일 불러옴
+import axios from 'axios';
 
-import App from './App.vue'
-import router from './router'
-import './main.css' // main.css 파일 불러옴
+const app = createApp(App);
 
-const app = createApp(App)
+// Axios 기본 URL 설정
+axios.defaults.baseURL = 'http://localhost:8080';
 
-app.use(createPinia())
-app.use(router)
+// Axios를 Vue 인스턴스에 추가
+app.config.globalProperties.$http = axios;
 
-app.mount('#app')
+app.use(createPinia());
+app.use(router);
+
+app.mount('#app');
