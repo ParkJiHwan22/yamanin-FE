@@ -12,6 +12,8 @@ import BoardList from '@/components/board/BoardList.vue'
 import BoardUpdate from '@/components/board/BoardUpdate.vue'
 import BoardDetail from '@/components/board/BoardDetail.vue'
 import UserTable from '@/components/user/UserTable.vue'
+import LoginPage from '@/components/login/LoginPage.vue'
+import SignUp from '@/components/login/SignUp.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,12 +63,24 @@ const router = createRouter({
     {
       path: '/gameinfo',
       name: 'gameInfo',
-      component: GameInfoView
+      component: GameInfoView,
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      children: [
+        {
+          path: '',
+          name: 'loginPage',
+          component: LoginPage,
+        },
+        {
+          path: '/signup',
+          name: 'signUp',
+          component: SignUp,
+        },
+      ]
     },
   ]
 })

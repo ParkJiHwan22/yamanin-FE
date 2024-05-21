@@ -75,10 +75,10 @@
             <div class="border rounded-lg shadow-lg p-5 space-y-2 mx-auto">
               <!--section 1-->
               <div class="col-span-1 m-5 text-xl">
-                <div class="space-x-5 mb-3">
+                <div class="space-x-5 space-y-1 mb-3">
                   <p class="text-lg">{{ getGameDateTime(store.board.gameId) }}</p>
                   <span class="text-2xl font-bold">{{ getGameTitle(store.board.gameId) }}</span>
-                  <p class="text-lg">{{ getGameLocation(store.board.gameId) }}</p>
+                  <p class="text-lg pb-1">{{ getGameLocation(store.board.gameId) }}</p>
                   <span class="color-pink-bg text-white text-lg mx-2 px-3 py-2 rounded-lg">
                     {{ getDaysUntilGame(store.board.gameId).text }}
                   </span>

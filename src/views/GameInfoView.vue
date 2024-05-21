@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="py-10">
     <p class="text-3xl mt-10 ms-20">{{ selectedDateFormatted }}</p>
   </div>
-  <div class="grid grid-cols-2 gap-4 my-5">
+  <div class="grid grid-cols-2 gap-4 my-5 pb-16">
 
     <!-- Trendy Calendar -->
     <div class="mx-auto col-span-1 w-full ps-20 pe-5 py-10">

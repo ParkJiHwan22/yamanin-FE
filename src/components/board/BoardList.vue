@@ -4,7 +4,6 @@
       <p class="text-4xl p-3">모집 게시판</p>
       <div class="flex space-x-4">
         <button @click="navigateToCreate" class="color-pink-bg text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition duration-300 ease-in-out text-xl">글 작성하기</button>
-        <button @click="navigateToMyPage(1)" class="color-blue-bg text-white px-4 py-2 rounded-xl hover:bg-blue-500 transition duration-300 ease-in-out text-xl">마이 페이지</button>
       </div>
     </div>
 
@@ -229,8 +228,6 @@ const getDaysUntilGame = (gameId) => {
     const currentDate = new Date()
     const diffTime = gameDate - currentDate
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    console.log(`D - ${diffDays}`)
 
     if (diffDays < 0) {
       return { text: '종료', days: diffDays }

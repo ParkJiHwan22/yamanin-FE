@@ -7,16 +7,27 @@ const REST_USER_API = `http://localhost:8080/user`;
 
 export const useUserStore = defineStore('user', () => {
 
-    const user = ref({});
-    // 사용자 정보를 로드하는 함수
-    const getUserById = function (id) {
-      axios.get(`${REST_USER_API}/${id}`)
-        .then((response) => {
-        user.value = response.data
-      })
-    }
+  const user = ref({});
+  // 사용자 정보를 로드하는 함수
+  const getUserById = function (id) {
+    axios.get(`${REST_USER_API}/${id}`)
+      .then((response) => {
+      user.value = response.data
+    })
+  }
 
-    // 사용자 프로필 수정을 위해 페이지 이동
+  const userList = ref([]);
+  // 사용자의 모든 정보를 로드하는 함수
+  const getAllUsers = async () => {
+    try {
+      const response = await axios.get(`${REST_USER_API}/`)
+      userList.value = response.data
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  // 사용자 프로필 수정을 위해 페이지 이동
   const editProfile = () => {
     router.push({ name: 'EditProfile', params: { id: user.value.userId } }); // userId에 맞게 수정
   };
@@ -80,5 +91,5 @@ export const useUserStore = defineStore('user', () => {
     //     })
     // }
 
-  return { user, getUserById, editProfile, accessToken, loginUser, login , logout };
+  return { user, getUserById, userList, getAllUsers, editProfile, accessToken, loginUser, login , logout };
 });

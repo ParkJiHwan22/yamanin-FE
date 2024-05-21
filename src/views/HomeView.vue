@@ -79,9 +79,22 @@
     </section>
   </div>
 </template>
+
+<script>
+import bbImg from '@/assets/bbImg.jpg';
+
+export default {
+  data() {
+    return {
+      bbImg
+    };
+  }
+}
+</script>
+
 <style scoped>
 .hero-section {
-  background-image: url('https://files.oaiusercontent.com/file-2gQhXABGik82gtKW6REx5YoI?se=2024-05-18T09%3A25%3A32Z&sp=r&sv=2023-11-03&sr=b&rscc=max-age%3D31536000%2C%20immutable&rscd=attachment%3B%20filename%3D0226831d-fbcf-4e18-95cf-ad8cd5b05b70.webp&sig=DyTJO0r9ltXImDd0vbh1HwsAt2yLZeeZ1uiUqOq0ZPE%3D');
+  background-image: url('@/assets/bbImg.jpg');
 }
 
 @keyframes fade-in-up {
