@@ -33,9 +33,6 @@
                     </span>
                     <p>0</p>
                   </div>
-                  <div class="mt-1">
-                    <p>조회 {{ store.board.viewCnt }}</p>
-                  </div>
                 </div>
               </div>
               <div class="space-x-3 pb-20 pt-5">
@@ -74,15 +71,24 @@
 
           <!-- 예약 -->
           <div class="col-span-1 text-center p-5">
-            <div class="border rounded-lg shadow-lg p-5 space-y-2">
-              <p class="text-lg mb-2">5월 9일 18시 30분</p>
-              <p class="text-2xl font-bold mb-2">LG vs 두산</p>
-              <p class="mb-4">잠실종합야구장</p>
-              <p class="text-lg text-navy-800">네이비석 312블록 5열</p>
-              <p class="text-lg">가격: {{ store.board.price }}원</p>
-              <button class="color-navy-bg text-sm text-white py-2 px-4 rounded-xl hover:bg-blue-800 transition duration-300">
-                티켓 확인하기
-              </button>
+
+            <div class="border rounded-lg shadow-lg p-5 space-y-2 mx-auto">
+              <!--section 1-->
+              <div class="col-span-1 m-5 text-xl">
+                <div class="space-x-5 mb-3">
+                  <p class="text-lg">{{ getGameDateTime(store.board.gameId) }}</p>
+                  <span class="text-2xl font-bold">{{ getGameTitle(store.board.gameId) }}</span>
+                  <p class="text-lg">{{ getGameLocation(store.board.gameId) }}</p>
+                  <span class="color-pink-bg text-white text-lg mx-2 px-3 py-2 rounded-lg">
+                    {{ getDaysUntilGame(store.board.gameId).text }}
+                  </span>
+                  <p class="text-lg">{{ store.board.seatInfo }}</p>
+                  <p class="text-lg">가격: {{ store.board.price }}원</p>
+                  <button class="color-navy-bg text-sm text-white py-2 px-4 rounded-xl hover:bg-blue-800 transition duration-300">
+                    티켓 확인하기
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="mt-5">
               <div class="border rounded-lg shadow-lg p-5">
@@ -117,15 +123,18 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBoardStore } from '@/stores/board'
+import { useGameInfoStore } from '@/stores/gameInfo'
 
 const store = useBoardStore()
+const gameStore = useGameInfoStore()
 const route = useRoute()
 
-// const boardId = ref(route.params.id)
+const board = ref({})
+const { gameInfos, fetchAllGameInfos } = gameStore
 
-const board = ref({})  
 onMounted(() => {
   store.getBoard(route.params.id)
+  fetchAllGameInfos()
 })
 
 
@@ -139,9 +148,76 @@ const getSeatTypeText = (seatType) => {
   }
 }
 
+const getGameTitle = (gameId) => {
+  const game = gameInfos.find(game => game.gameId === gameId)
+  return game ? game.homeTeam + " vs " + game.awayTeam : '게임 정보 없음'
+}
+
+const getGameDateTime = (gameId) => {
+  const game = gameInfos.find(game => game.gameId === gameId)
+  if (game && game.gameDT) {
+    const [datePart, timePart] = game.gameDT.split(' ')
+    const [year, month, day] = datePart.split('-')
+
+    const formattedMonth = parseInt(month, 10)
+    const formattedDay = parseInt(day, 10)
+
+    return `${formattedMonth}월 ${formattedDay}일 ${timePart}`
+  }
+
+  return '날짜 정보 없음'
+}
+
+const getDaysUntilGame = (gameId) => {
+  const game = gameInfos.find(game => game.gameId === gameId)
+  if (game && game.gameDT) {
+    const gameDate = new Date(game.gameDT)
+    const currentDate = new Date()
+    const diffTime = gameDate - currentDate
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    console.log(`D - ${diffDays}`)
+
+    if (diffDays < 0) {
+      return { text: '종료', days: diffDays }
+    } else if (diffDays === 0) {
+      return { text: '오늘', days: diffDays }
+    } else {
+      return { text: `D - ${diffDays}`, days: diffDays }
+    }
+  }
+  return { text: '날짜 정보 없음', days: null }
+}
+
+const getDaysClass = (gameId) => {
+  const gameInfo = getDaysUntilGame(gameId)
+  if (gameInfo.days < 0) {
+    return 'bg-gray-500'
+  } else if (gameInfo.days === 0) {
+    return 'bg-pink-500'
+  } else {
+    return 'bg-navy-500'
+  }
+}
+
+
+const getGameLocation = (gameId) => {
+  const game = gameInfos.find(game => game.gameId === gameId)
+  return game ? game.gamePlace : '장소 정보 없음'
+}
+
 
 </script>
 
 <style scoped>
+.color-pink-bg {
+  background-color: #FF6666;
+}
+.color-blue-bg {
+  background-color: #1e90ff;
+}
+.color-navy-bg {
+  background-color: #000080;
+}
 
 </style>
