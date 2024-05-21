@@ -10,11 +10,14 @@ export const useUserStore = defineStore('user', () => {
     const user = ref({});
     // 사용자 정보를 로드하는 함수
     const getUserById = function (id) {
-      axios.get(`${REST_USER_API}/${id}`)
+      return axios.get(`${REST_USER_API}/${id}`)
         .then((response) => {
-        user.value = response.data
-      })
-    }
+          user.value = response.data;
+        })
+        .catch((error) => {
+          console.error('Failed to fetch user by ID', error);
+        });
+    };
 
     // 사용자 프로필 수정을 위해 페이지 이동
   const editProfile = () => {
@@ -51,11 +54,16 @@ export const useUserStore = defineStore('user', () => {
     const login = (userInfo) => {
       axios.post(`${REST_USER_API}/login`, userInfo)
       .then((res) => {
+          // console.log("응애");
           accessToken.value = res.data.accessToken;
           loginUser.value = {...userInfo, name: res.data.name};
           // Fetch the user details immediately after login
+          console.log(loginUser);
+          console.log(res.data.userId);
+          console.log(user);
           getUserById(res.data.userId); // Assuming the server returns userId
-          router.push('/')
+          // router.push('/') // router push view router => {"name": }
+          router.push({name: 'home'})
       })
       .catch((e) => {
           console.error('Login failed', e);
