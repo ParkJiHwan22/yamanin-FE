@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import GuideView from '@/views/GuideView.vue'
 import BoardView from '@/views/BoardView.vue'
 import GameInfoView from '@/views/GameInfoView.vue'
+import LoginView from '@/views/LoginView.vue'
 // import MyPageView from '@/views/MyPageView.vue'
 
 
@@ -68,6 +69,11 @@ const router = createRouter({
       path: '/gameinfo',
       name: 'gameInfo',
       component: GameInfoView
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
     },
   ]
 })
