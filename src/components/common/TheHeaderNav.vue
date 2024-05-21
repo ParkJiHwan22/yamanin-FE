@@ -28,7 +28,9 @@
   <script setup>
   import { useUserStore } from '@/stores/user'
   import { computed } from 'vue'
+  import { useRouter } from 'vue-router'
   
+  const router = useRouter()
   const userStore = useUserStore()
   
   const isLoggedIn = computed(() => !!userStore.accessToken)
@@ -36,7 +38,7 @@
   const logout = () => {
     userStore.logout()
     // Redirect to the home page after logging out
-    userStore.$router.push('/')
+    router.push('/')
   }
   </script>
   
