@@ -4,7 +4,7 @@ import GuideView from '@/views/GuideView.vue'
 import BoardView from '@/views/BoardView.vue'
 import GameInfoView from '@/views/GameInfoView.vue'
 import LoginView from '@/views/LoginView.vue'
-// import MyPageView from '@/views/MyPageView.vue'
+import MyPageView from '@/views/MyPageView.vue'
 
 
 import BoardCreate from '@/components/board/BoardCreate.vue'
@@ -53,18 +53,11 @@ const router = createRouter({
         },
       ]
     },
-    // {
-    //   path: '/mypage',
-    //   name: 'myPage',
-    //   component: MyPageView,
-    //   children: [
-    //     {
-    //       path: ':id',
-    //       name: 'userTable',
-    //       component: UserTable
-    //     },
-    //   ]
-    // },
+    {
+      path: '/mypage',
+      name: 'myPage',
+      component: MyPageView,
+    },
     {
       path: '/gameinfo',
       name: 'gameInfo',

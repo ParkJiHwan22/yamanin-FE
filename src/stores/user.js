@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import router from '@/router';
 
-// const REST_USER_API = `http://localhost:8080/api-user`;
+const REST_USER_API = `http://localhost:8080/user`;
 
 export const useUserStore = defineStore('user', () => {
 
@@ -30,26 +30,42 @@ export const useUserStore = defineStore('user', () => {
 
     // POST 요청
     // userInfo: { "id": "user", "password": "user"}
+    // const login = (userInfo) => {
+
+    //     axios.post(`${REST_USER_API}/login`, userInfo)
+    //     .then((res)=>{
+    //         console.log(res);
+    //         // axios가 res의 data 속성에 응답 본문을 넣어줌.
+
+    //         accessToken.value = res.data.accessToken;
+    //         loginUser.value = {...userInfo, name: res.data.name};
+    //         router.push('/')
+    //     })
+    //     .catch((e)=>{
+    //         console.log('로그인 실패')
+    //         console.log(e)
+    //         router.push('/login')
+    //     })
+    // }
+
     const login = (userInfo) => {
-
-        axios.post('http://localhost:8080/user/login', userInfo)
-        .then((res)=>{
-            console.log(res);
-            // axios가 res의 data 속성에 응답 본문을 넣어줌.
-
-            accessToken.value = res.data.accessToken;
-            loginUser.value = {...userInfo, name: res.data.name};
-            router.push('/')
-        })
-        .catch((e)=>{
-            console.log('로그인 실패')
-            console.log(e)
-            router.push('/login')
-        })
-    }
+      axios.post(`${REST_USER_API}/login`, userInfo)
+      .then((res) => {
+          accessToken.value = res.data.accessToken;
+          loginUser.value = {...userInfo, name: res.data.name};
+          // Fetch the user details immediately after login
+          getUserById(res.data.userId); // Assuming the server returns userId
+          router.push('/')
+      })
+      .catch((e) => {
+          console.error('Login failed', e);
+          router.push('/login');
+      });
+  }
 
     const logout = ()=>{
         accessToken.value = ''
+        user.value = {};
         loginUser.value = {}
     }
 
