@@ -3,18 +3,21 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import router from '@/router';
 
-// const REST_USER_API = `http://localhost:8080/api-user`;
+const REST_USER_API = `http://localhost:8080/user`;
 
 export const useUserStore = defineStore('user', () => {
 
     const user = ref({});
     // 사용자 정보를 로드하는 함수
     const getUserById = function (id) {
-      axios.get(`${REST_USER_API}/${id}`)
+      return axios.get(`${REST_USER_API}/${id}`)
         .then((response) => {
-        user.value = response.data
-      })
-    }
+          user.value = response.data;
+        })
+        .catch((error) => {
+          console.error('Failed to fetch user by ID', error);
+        });
+    };
 
     // 사용자 프로필 수정을 위해 페이지 이동
   const editProfile = () => {
@@ -30,26 +33,47 @@ export const useUserStore = defineStore('user', () => {
 
     // POST 요청
     // userInfo: { "id": "user", "password": "user"}
+    // const login = (userInfo) => {
+
+    //     axios.post(`${REST_USER_API}/login`, userInfo)
+    //     .then((res)=>{
+    //         console.log(res);
+    //         // axios가 res의 data 속성에 응답 본문을 넣어줌.
+
+    //         accessToken.value = res.data.accessToken;
+    //         loginUser.value = {...userInfo, name: res.data.name};
+    //         router.push('/')
+    //     })
+    //     .catch((e)=>{
+    //         console.log('로그인 실패')
+    //         console.log(e)
+    //         router.push('/login')
+    //     })
+    // }
+
     const login = (userInfo) => {
-
-        axios.post('http://localhost:8080/user/login', userInfo)
-        .then((res)=>{
-            console.log(res);
-            // axios가 res의 data 속성에 응답 본문을 넣어줌.
-
-            accessToken.value = res.data.accessToken;
-            loginUser.value = {...userInfo, name: res.data.name};
-            router.push('/')
-        })
-        .catch((e)=>{
-            console.log('로그인 실패')
-            console.log(e)
-            router.push('/login')
-        })
-    }
+      axios.post(`${REST_USER_API}/login`, userInfo)
+      .then((res) => {
+          // console.log("응애");
+          accessToken.value = res.data.accessToken;
+          loginUser.value = {...userInfo, name: res.data.name};
+          // Fetch the user details immediately after login
+          console.log(loginUser);
+          console.log(res.data.userId);
+          console.log(user);
+          getUserById(res.data.userId); // Assuming the server returns userId
+          // router.push('/') // router push view router => {"name": }
+          router.push({name: 'home'})
+      })
+      .catch((e) => {
+          console.error('Login failed', e);
+          router.push('/login');
+      });
+  }
 
     const logout = ()=>{
         accessToken.value = ''
+        user.value = {};
         loginUser.value = {}
     }
 
