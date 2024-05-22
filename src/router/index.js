@@ -1,3 +1,4 @@
+// router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import GuideView from '@/views/GuideView.vue'
@@ -5,7 +6,7 @@ import BoardView from '@/views/BoardView.vue'
 import GameInfoView from '@/views/GameInfoView.vue'
 import LoginView from '@/views/LoginView.vue'
 import MyPageView from '@/views/MyPageView.vue'
-
+import EditProfileView from '@/views/EditProfileView.vue';
 
 import BoardCreate from '@/components/board/BoardCreate.vue'
 import BoardList from '@/components/board/BoardList.vue'
@@ -85,14 +86,14 @@ const router = createRouter({
       ]
     },
     {
-      path: '/mypage',
-      name: 'myPage',
-      component: MyPageView,
-    },
-    {
-      path: '/profile/:userId?',
+      path: '/profile/:loginId?',
       name: 'profile',
       component: ProfileView,
+    },
+    {
+      path: '/edit-profile',
+      name: 'EditProfile',
+      component: EditProfileView,
     },
   ]
 })
