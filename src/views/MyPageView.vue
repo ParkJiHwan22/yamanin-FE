@@ -1,7 +1,13 @@
 <template>
   <div class="mypage-view">
     <h1>My Profile</h1>
-    <div>
+    <div v-if="profile.userId">
+      <p><strong>Profile Image:</strong></p>
+      <img v-if="profile.profileImg" :src="'data:image/jpeg;base64,' + profile.profileImg" alt="Profile Image" />
+      <p><strong>Profile Text:</strong> {{ profile.profileText }}</p>
+      <p><strong>Support Team:</strong> {{ profile.supportTeam }}</p>
+    </div>
+    <div v-if="user">
       <p><strong>Login ID:</strong> {{ user.loginId }}</p>
       <p><strong>Name:</strong> {{ user.name }}</p>
       <p><strong>Email:</strong> {{ user.email }}</p>
@@ -11,18 +17,28 @@
       <p><strong>Gender:</strong> {{ user.gender == 1 ? 'Male' : 'Female' }}</p>
       <p><strong>Created On:</strong> {{ user.createdDate }}</p>
     </div>
+    <button @click="editProfile">Edit Profile</button>
   </div>
 </template>
 
 <script setup>
+import { watchEffect } from 'vue';
 import { useUserStore } from '@/stores/user';
-import { onMounted } from 'vue';
+import { useProfileStore } from '@/stores/profile';
 
-const { user, loginUser, getUserById } = useUserStore();
+const userStore = useUserStore();
+const profileStore = useProfileStore();
 
-onMounted(() => {
-  const userId = loginUser.userId; // 스토어에서 userId 사용
-  getUserById(userId);
+const { user, getUserById, editProfile } = userStore;
+const { profile, fetchProfile } = profileStore;
+
+watchEffect(() => {
+  if (user.value && user.value.userId) {
+    const userId = user.value.userId;
+    getUserById(userId).then(() => {
+      fetchProfile(userId);
+    });
+  }
 });
 </script>
 
