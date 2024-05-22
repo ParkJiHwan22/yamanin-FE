@@ -58,5 +58,7 @@ export const useGameInfoStore = defineStore('gameInfo', () => {
     fetchGameInfoById,
     addGameInfo,
     deleteGameInfo
-  };
+  }
+} , {
+  persist: true
 });

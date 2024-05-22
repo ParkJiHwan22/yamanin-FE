@@ -9,7 +9,7 @@
         <div class="flex justify-between items-center space-x-4 mb-4 ps-4">
           <div class="flex space-x-3">
             <img src="https://via.placeholder.com/40" alt="logo2" class="w-10 h-10 rounded-full">
-            <p class="text-2xl mt-1">jh0522</p>
+            <p class="text-xl mt-1">{{ getNickName(store.board.userId) }}</p>
           </div>
           <div class="pe-5">
             <p>매너점수: 4.57/5</p>
@@ -19,12 +19,9 @@
         <div class="grid grid-cols-3">
           <div class="col-span-2 border-r-4">
             <div class="p-10">
-              <div class="flex justify-between">
+              <div class="flex justify-between mx-5">
                 <div class="flex text-justify space-x-5">
                   <p class="text-2xl">{{ store.board.title }}</p>
-                  <span class="color-pink-bg text-white text-md px-3 mt-2 rounded-lg whitespace-nowrap">
-                    D - 2
-                  </span>
                 </div>
                 <div class="flex space-x-3">
                   <div class="flex space-x-2 mt-1">
@@ -35,7 +32,7 @@
                   </div>
                 </div>
               </div>
-              <div class="space-x-3 pb-20 pt-5">
+              <div class="space-x-3 pb-20 pt-5 mx-5">
                 <span class="color-pink-bg text-white text-sm px-3 py-2 rounded-lg">
                   {{ getSeatTypeText(store.board.seatType) }}
                 </span>
@@ -43,35 +40,15 @@
                   1자리 남음
                 </span>
               </div>
-              <p class="mt-5">{{ store.board.detail }}</p>
+              <p class="text-xl m-5">{{ store.board.detail }}</p>
             </div>
 
-            <div class="border-t-4">
-              <p class="p-5">댓글 3 개</p>
-            </div>
-            <div class="border-t-4 py-5 px-5">
-              <p>댓글입니다.</p>
-            </div>
-            <div class="border-t-4 py-5 px-5">
-              <p>댓글입니다.</p>
-            </div>
-            <div class="border-t-4 py-5 px-5">
-              <p>댓글입니다.</p>
-            </div>
-            <div class="border-t-4 py-5 px-5">
-              <p>댓글입니다.</p>
-            </div>
-            <div class="border-t-4 py-5 px-5">
-              <p>댓글입니다.</p>
-            </div>
-            <div class="border-t-4 py-5 px-5">
-              <p>댓글입니다.</p>
-            </div>
+            <!-- 댓글 컴포넌트 추가 -->
+            <CommentSection :postId="store.board.postId" />
           </div>
 
           <!-- 예약 -->
           <div class="col-span-1 text-center p-5">
-
             <div class="border rounded-lg shadow-lg p-5 space-y-2 mx-auto">
               <!--section 1-->
               <div class="col-span-1 m-5 text-xl">
@@ -83,7 +60,7 @@
                     {{ getDaysUntilGame(store.board.gameId).text }}
                   </span>
                   <p class="text-lg">{{ store.board.seatInfo }}</p>
-                  <p class="text-lg">가격: {{ store.board.price }}원</p>
+                  <p class="text-lg">가격: {{ formatPrice(store.board.price) }}원</p>
                   <button class="color-navy-bg text-sm text-white py-2 px-4 rounded-xl hover:bg-blue-800 transition duration-300">
                     티켓 확인하기
                   </button>
@@ -124,19 +101,22 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBoardStore } from '@/stores/board'
 import { useGameInfoStore } from '@/stores/gameInfo'
+import { useUserStore } from '@/stores/user'
+import CommentSection from '@/components/board/CommentSection.vue'
 
 const store = useBoardStore()
 const gameStore = useGameInfoStore()
+const userStore = useUserStore()
 const route = useRoute()
 
-const board = ref({})
 const { gameInfos, fetchAllGameInfos } = gameStore
+const { userList, getAllUsers } = userStore
 
 onMounted(() => {
   store.getBoard(route.params.id)
   fetchAllGameInfos()
+  getAllUsers()
 })
-
 
 const getSeatTypeText = (seatType) => {
   if (seatType === 'LEFT') {
@@ -169,14 +149,12 @@ const getGameDateTime = (gameId) => {
 }
 
 const getDaysUntilGame = (gameId) => {
-  const game = gameInfos.find(game => game.gameId === gameId)
+  const game = gameInfos.find(game => game.gameDT)
   if (game && game.gameDT) {
     const gameDate = new Date(game.gameDT)
     const currentDate = new Date()
     const diffTime = gameDate - currentDate
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    console.log(`D - ${diffDays}`)
 
     if (diffDays < 0) {
       return { text: '종료', days: diffDays }
@@ -200,13 +178,19 @@ const getDaysClass = (gameId) => {
   }
 }
 
-
 const getGameLocation = (gameId) => {
   const game = gameInfos.find(game => game.gameId === gameId)
   return game ? game.gamePlace : '장소 정보 없음'
 }
 
+const getNickName = (userId) => {
+  const user = userList.find(user => user.userId === userId)
+  return user ? user.nickName : '아이디 없음'
+}
 
+const formatPrice = (price) => {
+  return price.toLocaleString()
+}
 </script>
 
 <style scoped>
@@ -219,5 +203,4 @@ const getGameLocation = (gameId) => {
 .color-navy-bg {
   background-color: #000080;
 }
-
 </style>

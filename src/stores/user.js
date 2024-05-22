@@ -96,5 +96,17 @@ export const useUserStore = defineStore('user', () => {
     //     })
     // }
 
-  return { user, getUserById, userList, getAllUsers, editProfile, accessToken, loginUser, login , logout };
+  return { 
+    user, 
+    getUserById, 
+    userList, 
+    getAllUsers, 
+    editProfile, 
+    accessToken, 
+    loginUser, 
+    login , 
+    logout 
+  }
+} , {
+  persist: true
 });
