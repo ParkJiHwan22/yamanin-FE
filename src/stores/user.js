@@ -72,7 +72,6 @@ export const useUserStore = defineStore('user', () => {
     Object.keys(user).forEach(key => delete user[key]);
     Object.keys(loginUser).forEach(key => delete loginUser[key]);
   };
-
   return {
     user,
     loginUser,

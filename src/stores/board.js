@@ -53,5 +53,15 @@ export const useBoardStore = defineStore('board', () => {
     })
   }
 
-  return { createBoard, boardList, getBoardList, board, getBoard, updateBoard, searchBoardList}
-})
+  return { 
+    createBoard, 
+    boardList, 
+    getBoardList, 
+    board, 
+    getBoard, 
+    updateBoard, 
+    searchBoardList
+  }
+} , {
+  persist: true
+});

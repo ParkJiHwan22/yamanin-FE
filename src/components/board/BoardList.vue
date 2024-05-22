@@ -3,7 +3,7 @@
     <div class="flex justify-between p-10">
       <p class="text-4xl p-3">모집 게시판</p>
       <div class="flex space-x-4">
-        <button @click="navigateToCreate" class="color-pink-bg text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition duration-300 ease-in-out text-xl">글 작성하기</button>
+        <button @click="navigateToCreate" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition duration-300 ease-in-out text-xl">글 작성하기</button>
       </div>
     </div>
 
@@ -16,8 +16,9 @@
               <i class="fas fa-caret-down ml-2"></i>
             </h1>
             <div v-if="isSortDropdownOpen" class="absolute bg-white shadow-md border mt-8 rounded-lg py-2 z-10">
-              <h1 @click="selectSort('LATEST')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">최신순</h1>
-              <h1 @click="selectSort('OLDEST')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">오래된 순</h1>
+              <h1 @click="selectSort('DAYS_LEFT')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">전체 경기 보기</h1>
+              <h1 @click="selectSort('LATEST')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">오래된 순</h1>
+              <h1 @click="selectSort('OLDEST')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">최신순</h1>
             </div>
           </div>
           <div class="relative">
@@ -26,7 +27,7 @@
               <i class="fas fa-caret-down ml-2"></i>
             </h1>
             <div v-if="isFilterDropdownOpen" class="absolute bg-white shadow-md border mt-8 rounded-lg py-2 z-10">
-              <h1 @click="selectFilter('ALL')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">전체</h1>
+              <h1 @click="selectFilter('ALL')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">전체 경기 보기</h1>
               <h1 @click="selectFilter('LEFT')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">열정 공유</h1>
               <h1 @click="selectFilter('RIGHT')" class="cursor-pointer hover:bg-gray-100 px-4 py-2">좌석 공유</h1>
             </div>
@@ -48,7 +49,7 @@
           <div class="col-span-1 m-5 ps-5 py-5 text-xl">
             <div class="space-x-5 mb-3">
               <span class="text-2xl font-bold">{{ getGameTitle(board.gameId) }}</span>
-              <span class="color-pink-bg text-white text-lg mx-2 px-3 py-2 rounded-lg">
+              <span :class="[getDaysClass(board.gameId), 'text-white text-lg mx-2 px-3 py-2 rounded-lg']">
                 {{ getDaysUntilGame(board.gameId).text }}
               </span>
             </div>
@@ -58,8 +59,8 @@
 
           <!--section 2-->
           <div class="col-span-1 m-5 py-5">
-            <p class="text-2xl pb-5">{{ board.title }}</p>
-            <p class="text-xl">{{ board.detail }}</p>
+            <p class="text-2xl pb-5 truncate">{{ board.title }}</p>
+            <p class="text-xl truncate">{{ board.detail }}</p>
           </div>
 
           <!--section 3-->
@@ -73,9 +74,7 @@
 
             <div class="flex justify-end pt-10 pe-12">
               <img src="https://sports-phinf.pstatic.net/team/kbo/default/LG.png?type=f108_108" alt="" width="40" height="40">
-              <p class="p-2">아이디</p>
-              <!-- <span>조회수: {{ board.viewCnt }}</span> -->
-              <!-- <span><p>{{ board.createdDate }}</p></span> -->
+              <p class="p-2 pe-20">{{ getLoginId(board.userId) }}</p>
             </div>
           </div>
 
@@ -92,22 +91,26 @@ import { ref, computed, onMounted } from 'vue'
 import { useBoardStore } from '@/stores/board'
 import { useRouter } from 'vue-router'
 import { useGameInfoStore } from '@/stores/gameInfo'
+import { useUserStore } from '@/stores/user'
 
 const store = useBoardStore()
 const gameStore = useGameInfoStore()
+const userStore = useUserStore()
 const router = useRouter()
 
 const { boardList, getBoardList } = store
 const { gameInfos, fetchAllGameInfos } = gameStore
+const { userList, getAllUsers } = userStore
 
 onMounted(() => {
   getBoardList()
   fetchAllGameInfos()
+  getAllUsers()
 })
 
 const isSortDropdownOpen = ref(false)
 const isFilterDropdownOpen = ref(false)
-const selectedSort = ref('LATEST')
+const selectedSort = ref('DAYS_LEFT')
 const selectedFilter = ref('ALL')
 
 const toggleSortDropdown = () => {
@@ -142,13 +145,22 @@ const filteredBoardList = computed(() => {
 })
 
 const sortedBoardList = computed(() => {
-  return filteredBoardList.value.sort((a, b) => {
+  const sortedList = filteredBoardList.value.sort((a, b) => {
+    const aDaysUntilGame = getDaysUntilGame(a.gameId).days
+    const bDaysUntilGame = getDaysUntilGame(b.gameId).days
+
+    if (aDaysUntilGame < 0 && bDaysUntilGame >= 0) return 1
+    if (bDaysUntilGame < 0 && aDaysUntilGame >= 0) return -1
     if (selectedSort.value === 'LATEST') {
-      return new Date(b.createdDate) - new Date(a.createdDate)
+      return b.gameId - a.gameId
+    } else if (selectedSort.value === 'OLDEST') {
+      return a.gameId - b.gameId
     } else {
-      return new Date(a.createdDate) - new Date(b.createdDate)
+      return aDaysUntilGame - bDaysUntilGame
     }
   })
+
+  return sortedList
 })
 
 const getSeatTypeText = (seatType) => {
@@ -184,16 +196,18 @@ const navigateToMyPage = (userId) => {
 }
 
 const selectedSortText = computed(() => {
-  if (selectedSort.value === 'LATEST') {
+  if (selectedSort.value === 'OLDEST') {
     return '최신순'
-  } else {
+  } else if (selectedSort.value === 'LATEST') {
     return '오래된 순'
+  } else {
+    return '전체 경기 보기'
   }
 })
 
 const selectedFilterText = computed(() => {
   if (selectedFilter.value === 'ALL') {
-    return '전체'
+    return '전체 경기 보기'
   } else if (selectedFilter.value === 'LEFT') {
     return '열정 공유'
   } else {
@@ -247,14 +261,18 @@ const getDaysClass = (gameId) => {
   } else if (gameInfo.days === 0) {
     return 'bg-pink-500'
   } else {
-    return 'bg-navy-500'
+    return 'color-pink-bg'
   }
 }
-
 
 const getGameLocation = (gameId) => {
   const game = gameInfos.find(game => game.gameId === gameId)
   return game ? game.gamePlace : '장소 정보 없음'
+}
+
+const getLoginId = (userId) => {
+  const user = userList.find(user => user.userId === userId)
+  return user ? user.nickName : '아이디 없음'
 }
 </script>
 
@@ -267,5 +285,10 @@ const getGameLocation = (gameId) => {
 }
 .color-navy-bg {
   background-color: #000080;
+}
+.truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
