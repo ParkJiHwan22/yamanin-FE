@@ -80,16 +80,33 @@
   </div>
 </template>
 
-<script>
-import bbImg from '@/assets/bbImg.jpg';
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { useUserStore } from '@/stores/user';
+import { useProfileStore } from '@/stores/profile';
 
-export default {
-  data() {
-    return {
-      bbImg
-    };
+const userStore = useUserStore();
+const profileStore = useProfileStore();
+
+const { user, getUserById } = userStore;
+const { profile, fetchProfile } = profileStore;
+
+// 기존 데이터 가져오기
+onMounted(async () => {
+  if (user.value && user.value.userId) {
+    const userId = user.value.userId;
+    await getUserById(userId);
+    await fetchProfile(userId);
   }
-}
+});
+
+// 로그인 후 userId 변경 감지하여 동기화
+watch(() => user.value?.userId, async (newUserId) => {
+  if (newUserId) {
+    await getUserById(newUserId);
+    await fetchProfile(newUserId);
+  }
+});
 </script>
 
 <style scoped>

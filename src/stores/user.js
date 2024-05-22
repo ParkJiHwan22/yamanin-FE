@@ -1,112 +1,87 @@
-import { ref, computed } from 'vue'
+import { ref, reactive } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import router from '@/router';
+import { useProfileStore } from '@/stores/profile'; // 프로필 스토어 가져오기
 
 const REST_USER_API = `http://localhost:8080/user`;
 
 export const useUserStore = defineStore('user', () => {
-
-  const user = ref({});
-  // 사용자 정보를 로드하는 함수
-  const getUserById = function (id) {
-    axios.get(`${REST_USER_API}/${id}`)
-      .then((response) => {
-      user.value = response.data
-    })
-  }
-
+  const user = reactive({});
+  const loginUser = reactive({});
+  const accessToken = ref('');
   const userList = ref([]);
+
+  const profileStore = useProfileStore(); // 프로필 스토어 인스턴스 생성
+  const { fetchProfile } = profileStore;
+
+  // 사용자 정보를 로드하는 함수
+  const getUserById = async (id) => {
+    try {
+      const response = await axios.get(`${REST_USER_API}/${id}`);
+      Object.assign(user, response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getUserByLoginId = async (loginId) => {
+    try {
+      const response = await axios.get(`${REST_USER_API}/lid/${loginId}`);
+      Object.assign(user, response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // 사용자의 모든 정보를 로드하는 함수
   const getAllUsers = async () => {
     try {
-      const response = await axios.get(`${REST_USER_API}/`)
-      userList.value = response.data
-    } catch (err) {
-      console.error(err)
+      const response = await axios.get(`${REST_USER_API}/`);
+      userList.value = response.data;
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };
 
   // 사용자 프로필 수정을 위해 페이지 이동
   const editProfile = () => {
-    router.push({ name: 'EditProfile', params: { id: user.value.userId } }); // userId에 맞게 수정
+    if (user.userId) {
+      router.push({ name: 'EditProfile', params: { id: user.userId } });
+    } else {
+      console.error('User ID is not available');
+    }
   };
 
-  const accessToken = ref('')
-    const loginUser = ref({})
-    // refreshToken => 백엔드에서 응답 헤더(Cookie)에 넣어서 응답
-    // -> 자동으로 브라우저에 저장이 되고, 다음 요청에 자동으로 쿠키를 가지고 요청
-    // accessToken => 백엔드에서 응답 본문에 넣어서 보냄.
-    // -> pinia의 상태에 저장하든, sessionStorage, localStorage에 저장.
-
-    // POST 요청
-    // userInfo: { "id": "user", "password": "user"}
-    // const login = (userInfo) => {
-
-    //     axios.post(`${REST_USER_API}/login`, userInfo)
-    //     .then((res)=>{
-    //         console.log(res);
-    //         // axios가 res의 data 속성에 응답 본문을 넣어줌.
-
-    //         accessToken.value = res.data.accessToken;
-    //         loginUser.value = {...userInfo, name: res.data.name};
-    //         router.push('/')
-    //     })
-    //     .catch((e)=>{
-    //         console.log('로그인 실패')
-    //         console.log(e)
-    //         router.push('/login')
-    //     })
-    // }
-
-    const login = (userInfo) => {
-      axios.post(`${REST_USER_API}/login`, userInfo)
-      .then((res) => {
-          // console.log("응애");
-          accessToken.value = res.data.accessToken;
-          loginUser.value = {...userInfo, name: res.data.name};
-          // Fetch the user details immediately after login
-          console.log(loginUser);
-          console.log(res.data.userId);
-          console.log(user);
-          getUserById(res.data.userId); // Assuming the server returns userId
-          // router.push('/') // router push view router => {"name": }
-          router.push({name: 'home'})
-      })
-      .catch((e) => {
-          console.error('Login failed', e);
-          router.push('/login');
-      });
-  }
-
-    const logout = ()=>{
-        accessToken.value = ''
-        user.value = {};
-        loginUser.value = {}
+  const login = async (userInfo) => {
+    try {
+      const res = await axios.post(`${REST_USER_API}/login`, userInfo);
+      accessToken.value = res.data.accessToken;
+      Object.assign(loginUser, { ...userInfo, name: res.data.name });
+      await getUserByLoginId(loginUser.loginId);
+      await fetchProfile(user.userId); // 프로필 동기화
+      router.push({ name: 'home' });
+    } catch (error) {
+      console.error('Login failed', error);
+      router.push('/login');
     }
+  };
 
-    // const getMyPage = ()=>{
-    //     axios.get('http://localhost:8080/user/mypage', {
-    //         headers: {
-    //             Authorization: accessToken.value
-    //         }
-    //     })
-    //     .then((res)=>{
-    //         console.log(res)
-    //     })
-    // }
-
-  return { 
-    user, 
-    getUserById, 
-    userList, 
-    getAllUsers, 
-    editProfile, 
-    accessToken, 
-    loginUser, 
-    login , 
-    logout 
-  }
-} , {
-  persist: true
+  const logout = () => {
+    accessToken.value = '';
+    Object.keys(user).forEach(key => delete user[key]);
+    Object.keys(loginUser).forEach(key => delete loginUser[key]);
+  };
+  return {
+    user,
+    loginUser,
+    accessToken,
+    userList,
+    getUserById,
+    getUserByLoginId,
+    getAllUsers,
+    editProfile,
+    login,
+    logout,
+  };
 });
