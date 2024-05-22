@@ -1,9 +1,7 @@
 <template>
-    <div class="mypage-view">
-      <h1>My Profile</h1>
-      <!-- <div v-if="user.userId"> -->
-      <div>
-        <!-- <p><strong>ID:</strong> {{ user.userId }}</p> -->
+    <div class="profile-view">
+      <h1>User Profile</h1>
+      <div v-if="user">
         <p><strong>Login ID:</strong> {{ user.loginId }}</p>
         <p><strong>Name:</strong> {{ user.name }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
@@ -12,29 +10,32 @@
         <p><strong>Age:</strong> {{ user.age }}</p>
         <p><strong>Gender:</strong> {{ user.gender == 1 ? 'Male' : 'Female' }}</p>
         <p><strong>Created On:</strong> {{ user.createdDate }}</p>
-        <button @click="editProfile">Edit Profile</button>
+        <router-link to="/mypage">
+          <button>My Page</button>
+        </router-link>
       </div>
-      <!-- <div v-else>
-        <p>No user details available. Please login.</p>
-      </div> -->
+      <div v-else>
+        <p>Loading user details...</p>
+      </div>
     </div>
   </template>
   
   <script setup>
   import { useUserStore } from '@/stores/user';
   import { onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
   
-  const { user, editProfile, getUserById } = useUserStore();
+  const route = useRoute();
+  const { user, getUserById } = useUserStore();
   
-  // Simulate fetching user data on component mount
   onMounted(() => {
-    const userId = 1; // Placeholder; in reality, this would likely be fetched from authentication context or a route parameter
+    const userId = route.params.userId; // 라우트 파라미터에서 userId 가져오기
     getUserById(userId);
   });
   </script>
   
   <style scoped>
-  .mypage-view {
+  .profile-view {
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;

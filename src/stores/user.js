@@ -62,11 +62,16 @@ export const useUserStore = defineStore('user', () => {
     const login = (userInfo) => {
       axios.post(`${REST_USER_API}/login`, userInfo)
       .then((res) => {
+          // console.log("응애");
           accessToken.value = res.data.accessToken;
           loginUser.value = {...userInfo, name: res.data.name};
           // Fetch the user details immediately after login
+          console.log(loginUser);
+          console.log(res.data.userId);
+          console.log(user);
           getUserById(res.data.userId); // Assuming the server returns userId
-          router.push('/')
+          // router.push('/') // router push view router => {"name": }
+          router.push({name: 'home'})
       })
       .catch((e) => {
           console.error('Login failed', e);

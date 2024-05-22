@@ -15,6 +15,8 @@ import UserTable from '@/components/user/UserTable.vue'
 import LoginPage from '@/components/login/LoginPage.vue'
 import SignUp from '@/components/login/SignUp.vue'
 
+import ProfileView from '@/views/ProfileView.vue';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -82,7 +84,17 @@ const router = createRouter({
         },
       ]
     },
+    {
+      path: '/mypage',
+      name: 'myPage',
+      component: MyPageView,
+    },
+    {
+      path: '/profile/:userId?',
+      name: 'profile',
+      component: ProfileView,
+    },
   ]
 })
 
-export default router
+export default router;
