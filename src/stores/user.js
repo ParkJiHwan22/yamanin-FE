@@ -101,5 +101,7 @@ export const useUserStore = defineStore('user', () => {
     login,
     logout,
     setUser, // setUser 추가
-  };
+  }
+} , {
+  persist: true
 });

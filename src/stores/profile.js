@@ -75,5 +75,7 @@ export const useProfileStore = defineStore('profile', () => {
     uploadProfile,
     fetchProfile,
     updateProfile
-  };
+  }
+} , {
+  persist: true
 });
