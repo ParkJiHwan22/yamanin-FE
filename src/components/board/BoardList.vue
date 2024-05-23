@@ -184,6 +184,7 @@ const getSeatTypeClass = (seatType) => {
 }
 
 const navigateToDetail = (postId) => {
+  console.log(postId);
   router.push(`/board/${postId}`)
 }
 
