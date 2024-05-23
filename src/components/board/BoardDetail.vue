@@ -8,7 +8,7 @@
       <div>
         <div class="flex justify-between items-center space-x-4 mb-4 ps-4">
           <div class="flex space-x-3">
-            <img v-if="profile.profileImg" :src="'data:image/jpeg;base64,' + profile.profileImg" alt="Profile Image" class="w-10 h-10 rounded-full me-2 transition-transform transform hover:scale-125" />
+            <!--<img v-if="profile.profileImg" :src="'data:image/jpeg;base64,' + profile.profileImg" alt="Profile Image" class="w-10 h-10 rounded-full me-2 transition-transform transform hover:scale-125" /> -->
             <p class="text-xl mt-1 hover:underline cursor-pointer transition-transform transform hover:scale-110" @click="goToUserProfile(store.board.userId)">
               {{ getNickName(store.board.userId) }}
             </p>
