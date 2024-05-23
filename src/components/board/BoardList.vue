@@ -73,7 +73,7 @@
             </div>
 
             <div class="flex justify-end pt-10 pe-12">
-              <img src="https://sports-phinf.pstatic.net/team/kbo/default/LG.png?type=f108_108" alt="" width="40" height="40">
+              <!-- <img :src="getProfileImage(board.userId)" alt="Profile Image" class="w-10 h-10 rounded-full"> -->
               <p class="p-2 pe-20">{{ getLoginId(board.userId) }}</p>
             </div>
           </div>
@@ -107,6 +107,7 @@ onMounted(() => {
   fetchAllGameInfos()
   getAllUsers()
 })
+
 
 const isSortDropdownOpen = ref(false)
 const isFilterDropdownOpen = ref(false)
