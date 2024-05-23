@@ -19,12 +19,7 @@
         </template>
         <template v-else>
           <div class="flex items-center space-x-5">
-            <RouterLink :to="{ name: 'profile', params: { userId: userStore.user.userId }}" class="text-lg hover:underline flex items-center space-x-5">
-              <div v-if="profile.userId">
-                <img v-if="profile.profileImg" :src="'data:image/jpeg;base64,' + profile.profileImg" alt="Profile Image" class="w-10 h-10 rounded-full me-2" />
-              </div>
-              {{userStore.user.nickName}}님 안녕하세요!
-            </RouterLink>
+            <RouterLink :to="{ name: 'profile', params: { userId: userStore.user.userId }}" class="text-lg hover:underline">프로필</RouterLink>
             <button @click="logout" class="text-lg hover:underline">로그아웃</button>
           </div>
         </template>
@@ -79,4 +74,83 @@ const logout = () => {
 </script>
 
 <style scoped>
+.top-0 {
+  top: 0;
+}
+
+.left-0 {
+  left: 0;
+}
+
+.right-0 {
+  right: 0;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.z-50 {
+  z-index: 50;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.items-center {
+  align-items: center;
+}
+
+.p-5 {
+  padding: 1.25rem;
+}
+
+.w-40 {
+  width: 10rem;
+}
+
+.h-12 {
+  height: 3rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.space-x-8 > :not([hidden]) ~ :not([hidden]) {
+  margin-left: 2rem;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.me-10 {
+  margin-inline-end: 2.5rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.hover\:text-blue-600:hover {
+  color: #2563eb;
+}
+
+.hover\:underline:hover {
+  text-decoration: underline;
+}
 </style>
