@@ -51,9 +51,9 @@
               </tr>
               <tr class="animate-fade-in-up delay-200 hover:bg-gray-100 transition-colors duration-300">
                 <td class="py-4 px-6 border-b text-left">2024년 5월</td>
-                <td class="py-4 px-6 border-b text-right">74경기</td>
-                <td class="py-4 px-6 border-b text-right">15,470명</td>
-                <td class="py-4 px-6 border-b text-right">1,144,804명</td>
+                <td class="py-4 px-6 border-b text-right">89경기</td>
+                <td class="py-4 px-6 border-b text-right">14,695명</td>
+                <td class="py-4 px-6 border-b text-right">1,307,850명</td>
               </tr>
             </tbody>
           </table>
@@ -81,23 +81,6 @@
         </div>
       </div>
     </section>
-
-    <!-- About Section -->
-    <section class="py-16 bg-gray-100">
-      <div class="container mx-auto px-6">
-        <div class="md:flex md:items-center">
-          <div class="md:w-1/2 animate-fade-in-up">
-            <img src="https://via.placeholder.com/500" alt="About Us" class="rounded-lg shadow-lg">
-          </div>
-          <div class="mt-8 md:mt-0 md:w-1/2 md:pl-12 animate-fade-in-up delay-100">
-            <h2 class="text-3xl font-bold text-gray-900">About Us</h2>
-            <p class="mt-4 text-gray-700">We are a passionate team dedicated to enhancing your baseball viewing experience by connecting you with fellow fans.</p>
-            <p class="mt-2 text-gray-700">Our mission is to make it easier for you to attend games, share the excitement, and create lasting memories.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </div>
 </template>
 

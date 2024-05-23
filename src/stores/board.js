@@ -44,9 +44,11 @@ export const useBoardStore = defineStore('board', () => {
   const updateBoard = function () {
     axios.put(REST_BOARD_API, board.value)
       .then(() => {
-        router.push({ name: 'BoardList' })
-      })
+
+      router.push({name: 'boardList'})
+    })
   }
+
 
   const searchBoardList = function (searchCondition) {
     axios.get(REST_BOARD_API, {

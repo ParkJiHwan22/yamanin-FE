@@ -3,7 +3,7 @@
     <div class="flex justify-between p-10">
       <p class="text-4xl p-3">모집 게시판</p>
       <div class="flex space-x-4">
-        <button @click="navigateToCreate" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition duration-300 ease-in-out text-xl">글 작성하기</button>
+        <button @click="navigateToCreate" class="color-navy-bg text-white px-4 py-2 rounded-xl hover:bg-blue-900 transition duration-300 ease-in-out text-xl hover:scale-105 transform">글 작성하기</button>
       </div>
     </div>
 
@@ -33,7 +33,9 @@
             </div>
           </div>
         </div>
-
+        <!-- <div>
+          <input v-model="searchGameId" type="text" placeholder="Enter gameId" class="border rounded px-4 py-2">
+        </div> -->
         <h1>총 
           <span class="text-pink-500">
             {{ filteredBoardList.length }}
@@ -73,8 +75,7 @@
             </div>
 
             <div class="flex justify-end pt-10 pe-12">
-              <!-- <img :src="getProfileImage(board.userId)" alt="Profile Image" class="w-10 h-10 rounded-full"> -->
-              <p class="p-2 pe-20">{{ getLoginId(board.userId) }}</p>
+              <p class="p-2 pe-24">작성자: {{ getLoginId(board.userId) }}</p>
             </div>
           </div>
 
@@ -89,7 +90,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useBoardStore } from '@/stores/board'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useGameInfoStore } from '@/stores/gameInfo'
 import { useUserStore } from '@/stores/user'
 
@@ -97,22 +98,29 @@ const store = useBoardStore()
 const gameStore = useGameInfoStore()
 const userStore = useUserStore()
 const router = useRouter()
+const route = useRoute()
 
 const { boardList, getBoardList } = store
 const { gameInfos, fetchAllGameInfos } = gameStore
 const { userList, getAllUsers } = userStore
 
-onMounted(() => {
-  getBoardList()
-  fetchAllGameInfos()
-  getAllUsers()
-})
-
-
 const isSortDropdownOpen = ref(false)
 const isFilterDropdownOpen = ref(false)
 const selectedSort = ref('DAYS_LEFT')
 const selectedFilter = ref('ALL')
+const searchGameId = ref('')
+
+onMounted(() => {
+  getBoardList()
+  fetchAllGameInfos()
+  getAllUsers()
+
+  // Set searchGameId from query parameter if available
+  const gameIdFromQuery = route.query.gameId
+  if (gameIdFromQuery) {
+    searchGameId.value = gameIdFromQuery
+  }
+})
 
 const toggleSortDropdown = () => {
   isSortDropdownOpen.value = !isSortDropdownOpen.value
@@ -139,10 +147,14 @@ const selectFilter = (filter) => {
 }
 
 const filteredBoardList = computed(() => {
-  if (selectedFilter.value === 'ALL') {
-    return boardList
+  let filteredList = boardList
+  if (selectedFilter.value !== 'ALL') {
+    filteredList = filteredList.filter(board => board.seatType === selectedFilter.value)
   }
-  return boardList.filter(board => board.seatType === selectedFilter.value)
+  if (searchGameId.value) {
+    filteredList = filteredList.filter(board => board.gameId === parseInt(searchGameId.value))
+  }
+  return filteredList
 })
 
 const sortedBoardList = computed(() => {
@@ -277,7 +289,14 @@ const getLoginId = (userId) => {
   const user = userList.find(user => user.userId === userId)
   return user ? user.nickName : '아이디 없음'
 }
+
+const navigateToBoardSearch = (gameId) => {
+  router.push({ path: '/board', query: { gameId } });
+  window.scrollTo(0, 0);
+}
+
 </script>
+
 
 <style scoped>
 .color-pink-bg {

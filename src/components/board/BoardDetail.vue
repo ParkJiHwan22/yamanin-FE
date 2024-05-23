@@ -8,11 +8,14 @@
       <div>
         <div class="flex justify-between items-center space-x-4 mb-4 ps-4">
           <div class="flex space-x-3">
-            <img src="https://via.placeholder.com/40" alt="logo2" class="w-10 h-10 rounded-full">
-            <p class="text-xl mt-1" @click="goToUserProfile(store.board.userId)">{{ getNickName(store.board.userId) }}</p>
+            <img v-if="profile.profileImg" :src="'data:image/jpeg;base64,' + profile.profileImg" alt="Profile Image" class="w-10 h-10 rounded-full me-2 transition-transform transform hover:scale-125" />
+            <p class="text-xl mt-1 hover:underline cursor-pointer transition-transform transform hover:scale-110" @click="goToUserProfile(store.board.userId)">
+              {{ getNickName(store.board.userId) }}
+            </p>
           </div>
-          <div class="pe-5">
-            <p>매너점수: 4.57/5</p>
+          <div class="flex pe-5 cursor-pointer hover:scale-110 transition-transform duration-200" @click="reportPost">
+            <img src="@/assets/siren.png" alt="" class="w-8 h-8 me-2">
+            <p class="mt-2 me-5">신고</p>
           </div>
         </div>
         <hr class="border-t-4">
@@ -83,7 +86,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -97,6 +99,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useBoardStore } from '@/stores/board'
 import { useGameInfoStore } from '@/stores/gameInfo'
 import { useUserStore } from '@/stores/user'
+import { useProfileStore } from '@/stores/profile';
 import axios from 'axios'
 import CommentSection from '@/components/board/CommentSection.vue'
 import ReservationModal from '@/components/board/ReservationModal.vue'
@@ -110,12 +113,14 @@ export default {
     const store = useBoardStore()
     const gameStore = useGameInfoStore()
     const userStore = useUserStore()
+    const profileStore = useProfileStore();
     const route = useRoute()
     const router = useRouter()
   
     const { gameInfos, fetchAllGameInfos } = gameStore
     const { getUserById, userList, getAllUsers, getReservationsByGameId } = userStore
-  
+    const { profile, fetchProfile } = profileStore;
+
     const reservations = ref([])
     const requests = ref([])
     const loginUser = ref(JSON.parse(sessionStorage.getItem('loginUser')))
@@ -128,6 +133,7 @@ export default {
       await getAllUsers()
       await getReservationsByGameId(store.board.gameId)
       reservations.value = JSON.parse(sessionStorage.getItem('reservations')) || []
+
 
       // fetchRequests 함수 호출 및 sessionStorage에 저장
       await store.fetchRequests(store.board.postId)
@@ -267,6 +273,11 @@ export default {
     }
   }
 }
+
+const reportPost = () => {
+  alert('해당 글은 신고 되었습니다.')
+}
+
 </script>
 
 <style scoped>
