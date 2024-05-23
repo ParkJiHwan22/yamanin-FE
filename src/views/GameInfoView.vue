@@ -65,7 +65,7 @@
               <img :src="getTeamImage(game.awayTeam)" alt="Away Team Logo" class="h-8 w-8 mr-2">
               <p class="text-gray-700 font-semibold">{{ game.awayTeam }}</p>
             </div>
-            <span class="color-pink-bg text-white text-sm mx-2 px-3 py-2 rounded-lg">바로가기</span>
+            <span @click="navigateToBoardSearch(game.gameId)" class="color-pink-bg text-white text-sm mx-2 px-3 py-2 rounded-lg cursor-pointer">바로가기</span>
           </div>
         </div>
       </div>
@@ -77,11 +77,14 @@
   </div>
 </template>
 
+
 <script setup>
 import { onMounted, computed, ref, watch } from 'vue';
 import { useGameInfoStore } from '@/stores/gameInfo';
+import { useRouter } from 'vue-router';
 
 const store = useGameInfoStore();
+const router = useRouter();
 
 const { gameInfos, fetchAllGameInfos } = useGameInfoStore();
 
@@ -181,36 +184,8 @@ const formatDate = (date) => {
   return date.toLocaleDateString('ko-KR', options);
 };
 
+const navigateToBoardSearch = (gameId) => {
+  router.push({ path: '/board', query: { gameId } });
+};
+
 </script>
-
-<style scoped>
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-th, td {
-  text-align: left;
-  padding: 8px;
-}
-th {
-  background-color: #f3f3f3;
-}
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-.selected-pointer {
-  display: none; /* 파란 줄 숨기기 */
-}
-
-.selected-day::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 0;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background-color: blue;
-}
-</style>

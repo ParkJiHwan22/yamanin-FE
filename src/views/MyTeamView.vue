@@ -17,8 +17,9 @@
       </div>
     </div>
     <div class="flex justify-center py-10 space-x-4">
-      <button @click="goBack" class="px-6 py-3 bg-gray-400 text-white rounded-lg text-xl">뒤로가기</button>
-
+      <RouterLink to="/board">
+        <button class="px-6 py-3 bg-gray-400 text-white rounded-lg text-xl">뒤로가기</button>
+      </RouterLink>
       <button 
         @click="submitTeam" 
         :class="{'bg-blue-500 text-white': selectedTeam, 'bg-gray-300 text-gray-500 cursor-not-allowed': !selectedTeam}" 
@@ -33,9 +34,11 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useProfileStore } from '@/stores/profile'; // 프로필 스토어를 임포트합니다.
+import { useProfileStore } from '@/stores/profile';
 
 const profileStore = useProfileStore();
+
+const { profile, updateProfile } = profileStore;
 
 const teams = ref([
   { name: '롯데 자이언츠', logo: 'https://sports-phinf.pstatic.net/team/kbo/default/LT.png?type=f108_108' },
@@ -60,20 +63,23 @@ const submitTeam = async () => {
   if (!selectedTeam.value) return;
 
   const userId = profileStore.profile.userId;
-  const file = null; // 프로필 이미지 업데이트를 원치 않으면 null로 설정
+  const file = profileStore.profile.profileImg;
   const profileText = profileStore.profile.profileText;
-  const supportTeam = selectedTeam.value;
+  const supportTeam = selectedTeam.value.split(' ')[0];
+
+  const updatedProfile = {
+    userId,
+    file,
+    profileText,
+    supportTeam
+  };
 
   try {
-    await profileStore.updateProfile(userId, file, profileText, supportTeam);
+    await updateProfile(userId, updatedProfile);
     console.log('Selected Team:', supportTeam);
   } catch (error) {
     console.error('Error submitting team:', error);
   }
-};
-
-const goBack = () => {
-  console.log('Go back');
 };
 </script>
 

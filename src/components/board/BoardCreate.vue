@@ -13,10 +13,6 @@
               <input type="text" id="title" v-model="board.title" class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-400">
             </div>
             <div class="mb-6">
-              <label for="userId" class="block text-left mb-2">사용자 ID :</label>
-              <input type="number" id="userId" v-model="board.userId" class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-400">
-            </div>
-            <div class="mb-6">
               <label for="gameId" class="block text-left mb-2">게임 ID :</label>
               <input type="number" id="gameId" v-model="board.gameId" class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-400">
             </div>
@@ -37,7 +33,11 @@
             </div>
             <div class="mb-6">
               <label for="price" class="block text-left mb-2">가격 :</label>
-              <input type="number" id="price" v-model="board.price" class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-400">
+              <div class="flex items-center">
+                <button type="button" @click="decreasePrice" class="px-3 py-1 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-sm hover:bg-gray-400 transition duration-300">-</button>
+                <input type="number" id="price" v-model="board.price" class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-400 mx-2 text-center" readonly>
+                <button type="button" @click="increasePrice" class="px-3 py-1 bg-gray-300 text-gray-700 font-semibold rounded-md shadow-sm hover:bg-gray-400 transition duration-300">+</button>
+              </div>
             </div>
             <div class="mb-6">
               <label for="ticketImg" class="block text-left mb-2">티켓 이미지 :</label>
@@ -57,40 +57,44 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useBoardStore } from '@/stores/board'
-import { useRouter } from 'vue-router'
+import { useBoardStore } from '@/stores/board';
+import { useUserStore } from '@/stores/user';
+import { useRouter } from 'vue-router';
 
-const store = useBoardStore()
-const router = useRouter()
+const boardStore = useBoardStore();
+const userStore = useUserStore();
+const router = useRouter();
 
 const board = ref({
-  userId: '',
   gameId: '',
   seatInfo: '',
   seatType: '',
   title: '',
   detail: '',
-  price: '',
+  price: 10000, // 기본값 10000원
   ticketImg: null,
   viewCnt: 0
-})
+});
 
-const createBoard = async () => {
-  const formData = new FormData();
-  for (const key in board.value) {
-    formData.append(key, board.value[key]);
-  }
-  try {
-    await store.createBoard(formData);
-    router.push({ name: 'boardList' });
-  } catch (error) {
-    console.error("Failed to create board:", error);
-  }
+const createBoard = function () {
+const loginUser = userStore.loginUser; // 로그인된 사용자 정보 가져오기
+  store.createBoard(board.value)
 }
+
 
 const onFileChange = (event) => {
   board.value.ticketImg = event.target.files[0];
-}
+};
+
+const increasePrice = () => {
+  board.value.price += 1000;
+};
+
+const decreasePrice = () => {
+  if (board.value.price >= 2000) {
+    board.value.price -= 1000;
+  }
+};
 </script>
 
 <style scoped>
