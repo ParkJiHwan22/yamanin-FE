@@ -4,6 +4,7 @@ import axios from 'axios'
 import router from '@/router'
 
 const REST_BOARD_API = `http://localhost:8080/api-postItems`
+const REST_REQUEST_API = `http://localhost:8080/reservation_requests`
 
 export const useBoardStore = defineStore('board', () => {
   const createBoard = function (board) {
@@ -13,10 +14,11 @@ export const useBoardStore = defineStore('board', () => {
       data: board
     })
       .then(() => {
-        router.push({ name: 'boardList' })      })
+        router.push({ name: 'boardList' })
+      })
       .catch((err) => {
-      console.log(err)
-    })
+        console.log(err)
+      })
   }
 
   const boardList = ref([])
@@ -30,18 +32,20 @@ export const useBoardStore = defineStore('board', () => {
   }
 
   const board = ref({})
-  const getBoard = function (id) {
-    axios.get(`${REST_BOARD_API}/${id}`)
-      .then((response) => {
+  const getBoard = async (id) => {
+    try {
+      const response = await axios.get(`${REST_BOARD_API}/${id}`)
       board.value = response.data
-    })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const updateBoard = function () {
     axios.put(REST_BOARD_API, board.value)
       .then(() => {
-      router.push({name: 'BoardList'})
-    })
+        router.push({ name: 'BoardList' })
+      })
   }
 
   const searchBoardList = function (searchCondition) {
@@ -49,19 +53,32 @@ export const useBoardStore = defineStore('board', () => {
       params: searchCondition
     })
       .then((res) => {
-      boardList.value = res.data
-    })
+        boardList.value = res.data
+      })
   }
 
-  return { 
-    createBoard, 
-    boardList, 
-    getBoardList, 
-    board, 
-    getBoard, 
-    updateBoard, 
-    searchBoardList
+  const requests = ref([])
+  const fetchRequests = async (postId) => {
+    try {
+      const response = await axios.get(`${REST_REQUEST_API}/${postId}`)
+      requests.value = response.data
+      sessionStorage.setItem('reservation_requests', JSON.stringify(response.data))
+    } catch (error) {
+      console.error('Failed to fetch reservation requests:', error)
+    }
   }
-} , {
+
+  return {
+    createBoard,
+    boardList,
+    getBoardList,
+    board,
+    getBoard,
+    updateBoard,
+    searchBoardList,
+    requests,
+    fetchRequests
+  }
+}, {
   persist: true
-});
+})

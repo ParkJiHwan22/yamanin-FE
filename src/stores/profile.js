@@ -76,4 +76,6 @@ export const useProfileStore = defineStore('profile', () => {
     fetchProfile,
     updateProfile
   };
+}, {
+  persist: true
 });

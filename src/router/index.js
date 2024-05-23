@@ -96,6 +96,8 @@ const router = createRouter({
       component: EditProfileView,
     },
   ]
+}, {
+  persist: true
 })
 
 export default router;
