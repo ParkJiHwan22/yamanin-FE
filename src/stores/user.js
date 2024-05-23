@@ -84,6 +84,11 @@ export const useUserStore = defineStore('user', () => {
     Object.keys(loginUser).forEach(key => delete loginUser[key]);
   };
 
+  const setUser = (newUser) => {
+    Object.assign(user, newUser);
+    sessionStorage.setItem('user', JSON.stringify(user)); // 세션 스토리지에 사용자 정보 저장
+  };
+
   return {
     user,
     loginUser,
@@ -95,5 +100,6 @@ export const useUserStore = defineStore('user', () => {
     editProfile,
     login,
     logout,
+    setUser, // setUser 추가
   };
 });

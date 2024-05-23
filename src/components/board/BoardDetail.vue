@@ -189,8 +189,12 @@ const getNickName = (userId) => {
 }
 
 const formatPrice = (price) => {
-  return price.toLocaleString()
+  if (price !== undefined && price !== null) {
+    return price.toLocaleString()
+  }
+  return '가격 정보 없음'
 }
+
 </script>
 
 <style scoped>
