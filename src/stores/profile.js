@@ -2,6 +2,9 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { reactive } from 'vue';
 
+const API_URL = `http://localhost:8080/api/profiles`;
+
+
 export const useProfileStore = defineStore('profile', () => {
   const profile = reactive({
     userId: null,
@@ -9,6 +12,8 @@ export const useProfileStore = defineStore('profile', () => {
     profileText: '',
     supportTeam: ''
   });
+
+  const profiles = reactive([]);
 
   // 세션 스토리지에서 프로필 정보 로드
   if (sessionStorage.getItem('profile')) {
@@ -24,7 +29,7 @@ export const useProfileStore = defineStore('profile', () => {
     formData.append('supportTeam', supportTeam);
 
     try {
-      const response = await axios.post('/api/profiles/upload', formData, {
+      const response = await axios.post(`${API_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -39,7 +44,7 @@ export const useProfileStore = defineStore('profile', () => {
 
   const fetchProfile = async (userId) => {
     try {
-      const response = await axios.get(`/api/profiles/${userId}`);
+      const response = await axios.get(`${API_URL}/${userId}`);
       Object.assign(profile, response.data);
       // 세션 스토리지에 프로필 저장
       sessionStorage.setItem('profile', JSON.stringify(profile));
@@ -56,7 +61,7 @@ export const useProfileStore = defineStore('profile', () => {
     formData.append('supportTeam', supportTeam);
 
     try {
-      const response = await axios.put(`/api/profiles/${userId}`, formData, {
+      const response = await axios.put(`${API_URL}/${userId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -72,10 +77,11 @@ export const useProfileStore = defineStore('profile', () => {
 
   return {
     profile,
+    profiles,
     uploadProfile,
     fetchProfile,
     updateProfile
-  };
-}, {
+  }
+} , {
   persist: true
 });

@@ -7,6 +7,7 @@ import GameInfoView from '@/views/GameInfoView.vue'
 import LoginView from '@/views/LoginView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import EditProfileView from '@/views/EditProfileView.vue';
+import MyTeamView from '@/views/MyTeamView.vue';
 
 import BoardCreate from '@/components/board/BoardCreate.vue'
 import BoardList from '@/components/board/BoardList.vue'
@@ -94,6 +95,11 @@ const router = createRouter({
       path: '/edit-profile',
       name: 'EditProfile',
       component: EditProfileView,
+    },
+    {
+      path: '/myteam',
+      name: 'MyTeamView',
+      component: MyTeamView,
     },
   ]
 }, {

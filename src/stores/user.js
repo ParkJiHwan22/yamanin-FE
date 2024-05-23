@@ -116,6 +116,6 @@ export const useUserStore = defineStore('user', () => {
     setUser, // setUser 추가
     getReservationsByGameId,
   };
-}, {
+} , {
   persist: true
 });
