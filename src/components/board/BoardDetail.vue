@@ -9,7 +9,7 @@
         <div class="flex justify-between items-center space-x-4 mb-4 ps-4">
           <div class="flex space-x-3">
             <img src="https://via.placeholder.com/40" alt="logo2" class="w-10 h-10 rounded-full">
-            <p class="text-xl mt-1">{{ getNickName(store.board.userId) }}</p>
+            <p class="text-xl mt-1" @click="goToUserProfile(store.board.userId)">{{ getNickName(store.board.userId) }}</p>
           </div>
           <div class="pe-5">
             <p>매너점수: 4.57/5</p>
@@ -98,7 +98,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useBoardStore } from '@/stores/board'
 import { useGameInfoStore } from '@/stores/gameInfo'
 import { useUserStore } from '@/stores/user'
@@ -108,9 +108,10 @@ const store = useBoardStore()
 const gameStore = useGameInfoStore()
 const userStore = useUserStore()
 const route = useRoute()
+const router = useRouter()
 
 const { gameInfos, fetchAllGameInfos } = gameStore
-const { userList, getAllUsers } = userStore
+const { getUserById, userList, getAllUsers } = userStore
 
 onMounted(() => {
   store.getBoard(route.params.id)
@@ -184,8 +185,14 @@ const getGameLocation = (gameId) => {
 }
 
 const getNickName = (userId) => {
-  const user = userList.find(user => user.userId === userId)
-  return user ? user.nickName : '아이디 없음'
+  const usern = userList.find(usern => usern.userId === userId)
+  return usern ? usern.nickName : '아이디 없음'
+}
+
+const goToUserProfile = (userId) => {
+  getUserById(userId).then(() => {      
+      router.push('/profile')
+  });
 }
 
 const formatPrice = (price) => {

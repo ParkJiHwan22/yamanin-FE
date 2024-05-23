@@ -15,7 +15,7 @@
       <p><strong>Nickname:</strong> {{ user.nickName }}</p>
       <p><strong>Age:</strong> {{ user.age }}</p>
       <p><strong>Gender:</strong> {{ user.gender == 1 ? 'Male' : 'Female' }}</p>
-      <router-link to="/mypage">
+      <router-link v-if="user.loginId === loginUser.loginId" to="/mypage">
         <button>My Page</button>
       </router-link>
     </div>
@@ -30,7 +30,7 @@ import { useProfileStore } from '@/stores/profile';
 const userStore = useUserStore();
 const profileStore = useProfileStore();
 
-const { user, getUserById } = userStore;
+const { user, loginUser, getUserById } = userStore;
 const { profile, fetchProfile } = profileStore;
 
 onMounted(() => {
