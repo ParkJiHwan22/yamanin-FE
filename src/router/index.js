@@ -102,6 +102,8 @@ const router = createRouter({
       component: MyTeamView,
     },
   ]
+}, {
+  persist: true
 })
 
 export default router;

@@ -1,29 +1,34 @@
-# yamanin-FE
+# 야구로 만나는 인연 (야만인) :baseball:
 
-This template should help get you started developing with Vue 3 in Vite.
+## 소개
+**야구로 만나는 인연 (야만인)** 은 야구장을 같이 갈 사람을 구할 수 있는 소셜 매칭 어플리케이션입니다. 야구 경기를 혼자 보는 것이 지루하거나, 새로운 친구와 함께 경기를 즐기고 싶은 분들을 위해 만들어졌습니다.
 
-## Recommended IDE Setup
+## 주요 기능
+- **사용자 프로필:** 사용자들이 자신의 사진, 야구 관련 관심사, 좋아하는 팀, 선호하는 경기 등을 프로필에 등록할 수 있습니다.
+- **매칭 관리:** 사용자들이 직접 매칭을 생성하고, 같이 경기를 볼 수 있는 사람들을 모집할 수 있습니다.
+- **게시글 댓글:** 댓글을 통해 경기 관람, 좋아하는 팀, 선수 등을 주제로 서로 소통할 수 있습니다.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 설치 및 사용 방법
+### 요구 사항
+- Pentium 이상
+- 인터넷 연결
+- 야만인은 1920 × 1080 해상도에 최적화되어있습니다.
 
-## Customize configuration
+### 설치 방법
+1. Gitlab에서 "야구로 만나는 인연 (야만인)"을 다운로드합니다.
+2. 앱을 실행하고, 이메일 또는 소셜 미디어 계정을 사용하여 가입합니다.
+3. 프로필을 설정하고, 관심 있는 경기를 선택합니다.
+4. 매칭된 사용자들과 채팅하고, 함께 야구장을 방문할 계획을 세웁니다.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## 기여 방법
+1. 이 저장소를 포크합니다.
+2. 새로운 브랜치를 만듭니다 (`git checkout -b feature/새기능`).
+3. 변경 사항을 커밋합니다 (`git commit -am '새 기능 추가'`).
+4. 브랜치에 푸시합니다 (`git push origin feature/새기능`).
+5. 풀 리퀘스트를 생성합니다.
 
-## Project Setup
+## 라이센스
+이 프로젝트는 MIT 라이센스를 따릅니다.
 
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+## 문의
+앱 사용 중 문제가 발생하거나, 개선 사항이 있다면 [bat522@naver.com](mailto:bat522@naver.com)으로 연락 주세요.
