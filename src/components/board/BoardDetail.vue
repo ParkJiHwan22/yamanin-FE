@@ -69,20 +69,14 @@
             </div>
             <div class="mt-5">
               <div class="border rounded-lg shadow-lg p-5">
-                <div class="flex items-center space-x-4 mb-4">
-                  <img src="https://via.placeholder.com/40" alt="logo1" class="w-10 h-10 rounded-full">
-                  <p>Jihwan</p>
-                </div>
-                <div class="flex items-center space-x-4 mb-4">
-                  <img src="https://via.placeholder.com/40" alt="logo2" class="w-10 h-10 rounded-full">
-                  <p>jh0522</p>
-                </div>
-                <div class="flex items-center space-x-4 mb-4">
-                  <img src="https://via.placeholder.com/40" alt="logo3" class="w-10 h-10 rounded-full">
-                  <p>bat522</p>
+                <div v-for="reservation in reservations" :key="reservation.id" class="flex items-center space-x-4 mb-4">
+                  <p :class="{'font-bold': reservation.isAuthor}">{{ reservation.userName }}</p>
+                  <button v-if="reservation.userId != loginUser.userId && store.board.userId == loginUser.userId" @click="deleteReservation(reservation.id)" class="ml-2 text-red-500">
+                    삭제
+                  </button>
                 </div>
                 <div class="border-t pt-4">
-                  <button class="w-full border border-dashed rounded-full py-2 text-gray-400 hover:text-gray-600 transition duration-300">
+                  <button class="w-full border border-dashed rounded-full py-2 text-gray-400 hover:text-gray-600 transition duration-300" @click="showReservationModal">
                     +
                   </button>
                 </div>
@@ -93,115 +87,186 @@
         </div>
       </div>
     </div>
+    <ReservationModal :showModal="showModal" :isReservationList="isReservationList" @close="closeModal" />
   </div>
 </template>
 
-<script setup>
+<script>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBoardStore } from '@/stores/board'
 import { useGameInfoStore } from '@/stores/gameInfo'
 import { useUserStore } from '@/stores/user'
+import axios from 'axios'
 import CommentSection from '@/components/board/CommentSection.vue'
+import ReservationModal from '@/components/board/ReservationModal.vue'
 
-const store = useBoardStore()
-const gameStore = useGameInfoStore()
-const userStore = useUserStore()
-const route = useRoute()
-const router = useRouter()
+export default {
+  components: {
+    CommentSection,
+    ReservationModal
+  },
+  setup() {
+    const store = useBoardStore()
+    const gameStore = useGameInfoStore()
+    const userStore = useUserStore()
+    const route = useRoute()
+    const router = useRouter()
+  
+    const { gameInfos, fetchAllGameInfos } = gameStore
+    const { getUserById, userList, getAllUsers, getReservationsByGameId } = userStore
+  
+    const reservations = ref([])
+    const requests = ref([])
+    const loginUser = ref(JSON.parse(sessionStorage.getItem('loginUser')))
+    const showModal = ref(false)
+    const isReservationList = ref(false)
+  
+    onMounted(async () => {
+      await store.getBoard(route.params.id)
+      await fetchAllGameInfos()
+      await getAllUsers()
+      await getReservationsByGameId(store.board.gameId)
+      reservations.value = JSON.parse(sessionStorage.getItem('reservations')) || []
 
-const { gameInfos, fetchAllGameInfos } = gameStore
-const { getUserById, userList, getAllUsers } = userStore
+      // fetchRequests 함수 호출 및 sessionStorage에 저장
+      await store.fetchRequests(store.board.postId)
+      requests.value = JSON.parse(sessionStorage.getItem('reservation_requests')) || []
+    })
+  
+    const deleteReservation = async (reservationId) => {
+      try {
+        await axios.delete(`http://localhost:8080/reservations/${reservationId}`)
+        await getReservationsByGameId(store.board.gameId)
+        reservations.value = JSON.parse(sessionStorage.getItem('reservations')) || []
+      } catch (error) {
+        console.error('Failed to delete reservation:', error)
+      }
+    }
+  
+    const showReservationModal = async () => {
+      await store.fetchRequests(store.board.postId)
+      if (store.board.userId === loginUser.value.userId) {
+        isReservationList.value = true
+      } else {
+        isReservationList.value = false
+      }
+      showModal.value = true
+    }
 
-onMounted(() => {
-  store.getBoard(route.params.id)
-  fetchAllGameInfos()
-  getAllUsers()
-})
+    const closeModal = () => {
+      showModal.value = false
+    }
+  
+    const getSeatTypeText = (seatType) => {
+      if (seatType === 'LEFT') {
+        return '열정 공유'
+      } else if (seatType === 'RIGHT') {
+        return '좌석 공유'
+      } else {
+        return seatType
+      }
+    }
+  
+    const getGameTitle = (gameId) => {
+      const game = gameInfos.find(game => game.gameId === gameId)
+      return game ? game.homeTeam + " vs " + game.awayTeam : '게임 정보 없음'
+    }
+  
+    const getGameDateTime = (gameId) => {
+      const game = gameInfos.find(game => game.gameId === gameId)
+      if (game && game.gameDT) {
+        const [datePart, timePart] = game.gameDT.split(' ')
+        const [year, month, day] = datePart.split('-')
+  
+        const formattedMonth = parseInt(month, 10)
+        const formattedDay = parseInt(day, 10)
+  
+        return `${formattedMonth}월 ${formattedDay}일 ${timePart}`
+      }
+  
+      return '날짜 정보 없음'
+    }
+  
+    const getDaysUntilGame = (gameId) => {
+      const game = gameInfos.find(game => game.gameDT)
+      if (game && game.gameDT) {
+        const gameDate = new Date(game.gameDT)
+        const currentDate = new Date()
+        const diffTime = gameDate - currentDate
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  
+        if (diffDays < 0) {
+          return { text: '종료', days: diffDays }
+        } else if (diffDays === 0) {
+          return { text: '오늘', days: diffDays }
+        } else {
+          return { text: `D - ${diffDays}`, days: diffDays }
+        }
+      }
+      return { text: '날짜 정보 없음', days: null }
+    }
+  
+    const getDaysClass = (gameId) => {
+      const gameInfo = getDaysUntilGame(gameId)
+      if (gameInfo.days < 0) {
+        return 'bg-gray-500'
+      } else if (gameInfo.days === 0) {
+        return 'bg-pink-500'
+      } else {
+        return 'bg-navy-500'
+      }
+    }
+  
+    const getGameLocation = (gameId) => {
+      const game = gameInfos.find(game => game.gameId === gameId)
+      return game ? game.gamePlace : '장소 정보 없음'
+    }
+  
+    const getNickName = (userId) => {
+      const usern = userList.find(usern => usern.userId === userId)
+      return usern ? usern.nickName : '아이디 없음'
+    }
+  
+    const goToUserProfile = (userId) => {
+      getUserById(userId).then(() => {      
+          router.push('/profile')
+      });
+    }
+  
+    const formatPrice = (price) => {
+      if (price !== undefined && price !== null) {
+        return price.toLocaleString()
+      }
+      return '가격 정보 없음'
+    }
 
-const getSeatTypeText = (seatType) => {
-  if (seatType === 'LEFT') {
-    return '열정 공유'
-  } else if (seatType === 'RIGHT') {
-    return '좌석 공유'
-  } else {
-    return seatType
-  }
-}
-
-const getGameTitle = (gameId) => {
-  const game = gameInfos.find(game => game.gameId === gameId)
-  return game ? game.homeTeam + " vs " + game.awayTeam : '게임 정보 없음'
-}
-
-const getGameDateTime = (gameId) => {
-  const game = gameInfos.find(game => game.gameId === gameId)
-  if (game && game.gameDT) {
-    const [datePart, timePart] = game.gameDT.split(' ')
-    const [year, month, day] = datePart.split('-')
-
-    const formattedMonth = parseInt(month, 10)
-    const formattedDay = parseInt(day, 10)
-
-    return `${formattedMonth}월 ${formattedDay}일 ${timePart}`
-  }
-
-  return '날짜 정보 없음'
-}
-
-const getDaysUntilGame = (gameId) => {
-  const game = gameInfos.find(game => game.gameDT)
-  if (game && game.gameDT) {
-    const gameDate = new Date(game.gameDT)
-    const currentDate = new Date()
-    const diffTime = gameDate - currentDate
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    if (diffDays < 0) {
-      return { text: '종료', days: diffDays }
-    } else if (diffDays === 0) {
-      return { text: '오늘', days: diffDays }
-    } else {
-      return { text: `D - ${diffDays}`, days: diffDays }
+    return {
+      store,
+      gameStore,
+      userStore,
+      route,
+      router,
+      reservations,
+      requests,
+      loginUser,
+      showModal,
+      isReservationList,
+      deleteReservation,
+      showReservationModal,
+      closeModal,
+      getSeatTypeText,
+      getGameTitle,
+      getGameDateTime,
+      getDaysUntilGame,
+      getDaysClass,
+      getGameLocation,
+      getNickName,
+      goToUserProfile,
+      formatPrice
     }
   }
-  return { text: '날짜 정보 없음', days: null }
 }
-
-const getDaysClass = (gameId) => {
-  const gameInfo = getDaysUntilGame(gameId)
-  if (gameInfo.days < 0) {
-    return 'bg-gray-500'
-  } else if (gameInfo.days === 0) {
-    return 'bg-pink-500'
-  } else {
-    return 'bg-navy-500'
-  }
-}
-
-const getGameLocation = (gameId) => {
-  const game = gameInfos.find(game => game.gameId === gameId)
-  return game ? game.gamePlace : '장소 정보 없음'
-}
-
-const getNickName = (userId) => {
-  const usern = userList.find(usern => usern.userId === userId)
-  return usern ? usern.nickName : '아이디 없음'
-}
-
-const goToUserProfile = (userId) => {
-  getUserById(userId).then(() => {      
-      router.push('/profile')
-  });
-}
-
-const formatPrice = (price) => {
-  if (price !== undefined && price !== null) {
-    return price.toLocaleString()
-  }
-  return '가격 정보 없음'
-}
-
 </script>
 
 <style scoped>

@@ -5,15 +5,28 @@ import router from '@/router';
 import { useProfileStore } from '@/stores/profile';
 
 const REST_USER_API = `http://localhost:8080/user`;
+const REST_RESERVATION_API = `http://localhost:8080/reservations`;
+
 
 export const useUserStore = defineStore('user', () => {
   const user = reactive({});
   const loginUser = reactive({});
   const accessToken = ref('');
   const userList = ref([]);
+  const reservations = reactive([]);
 
   const profileStore = useProfileStore();
   const { fetchProfile } = profileStore;
+
+  const getReservationsByGameId = async (gameId) => {
+    try {
+      const response = await axios.get(`${REST_RESERVATION_API}/game/${gameId}`);
+      reservations.value = response.data;
+      sessionStorage.setItem('reservations', JSON.stringify(reservations.value)); // 세션 스토리지에 저장
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // 초기 로그인 정보 세션에서 로드
   if (sessionStorage.getItem('loginUser')) {
@@ -66,7 +79,7 @@ export const useUserStore = defineStore('user', () => {
     try {
       const res = await axios.post(`${REST_USER_API}/login`, userInfo);
       accessToken.value = res.data.accessToken;
-      Object.assign(loginUser, { ...userInfo, accessToken: res.data.accessToken, name: res.data.name });
+      Object.assign(loginUser, { ...userInfo, accessToken: res.data.accessToken, name: res.data.name, userId: res.data.userId });
       sessionStorage.setItem('loginUser', JSON.stringify(loginUser)); // 세션 스토리지에 로그인 사용자 정보 저장
       await getUserByLoginId(loginUser.loginId); // 사용자 정보 조회 및 저장
       router.push({ name: 'home' });
@@ -101,7 +114,8 @@ export const useUserStore = defineStore('user', () => {
     login,
     logout,
     setUser, // setUser 추가
-  }
+    getReservationsByGameId,
+  };
 } , {
   persist: true
 });

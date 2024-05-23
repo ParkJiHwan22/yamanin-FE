@@ -186,6 +186,7 @@ const getSeatTypeClass = (seatType) => {
 
 const navigateToDetail = (postId) => {
   console.log(postId);
+  store.fetchRequests(postId)
   router.push(`/board/${postId}`)
 }
 
