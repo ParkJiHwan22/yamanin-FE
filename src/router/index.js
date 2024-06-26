@@ -103,6 +103,9 @@ const router = createRouter(
         component: MyTeamView,
       },
     ],
+    scrollBehavior(to, from, savedPosition) {
+      return { top: 0 };
+    },
   },
   {
     persist: true,

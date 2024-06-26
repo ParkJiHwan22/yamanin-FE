@@ -57,17 +57,21 @@ export const useProfileStore = defineStore(
       }
     };
 
+    const fetchAllProfiles = async () => {
+      try {
+        const response = await axios.get(API_URL);
+        profiles.splice(0, profiles.length, ...response.data); // profiles 배열을 새로운 데이터로 교체
+      } catch (error) {
+        console.error("Error fetching all profiles:", error);
+      }
+    };
+
     const updateProfile = async (userId, file, profileText, supportTeam) => {
       const formData = new FormData();
       formData.append("userId", userId);
       formData.append("file", file);
       formData.append("profileText", profileText);
       formData.append("supportTeam", supportTeam);
-
-      // FormData 내용을 확인하기 위한 로그 출력
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
 
       try {
         const response = await axios.put(`${API_URL}/${userId}`, formData, {
@@ -80,11 +84,11 @@ export const useProfileStore = defineStore(
           "profile",
           JSON.stringify({ ...profile, ...response.data })
         );
+        await fetchProfile(userId); // 프로필 동기화
         return response.data;
       } catch (error) {
         console.error("Error updating profile:", error);
       }
-      await fetchProfile(userId); // 프로필 동기화
     };
 
     return {
@@ -92,6 +96,7 @@ export const useProfileStore = defineStore(
       profiles,
       uploadProfile,
       fetchProfile,
+      fetchAllProfiles,
       updateProfile,
     };
   },

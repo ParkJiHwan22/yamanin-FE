@@ -16,7 +16,6 @@
               alt="Profile Image"
               class="w-10 h-10 rounded-full me-2 transition-transform transform hover:scale-125"
             />
-
             <p
               class="text-xl mt-1 hover:underline cursor-pointer transition-transform transform hover:scale-110"
             >
@@ -148,7 +147,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useBoardStore } from "@/stores/board";
 import { useGameInfoStore } from "@/stores/gameInfo";
 import { useUserStore } from "@/stores/user";
-import { useProfileStore } from "@/stores/profile";
+import { useProfileStore } from "@/stores/profile"; // 프로필 스토어 추가
 import axios from "axios";
 import CommentSection from "@/components/board/CommentSection.vue";
 import ReservationModal from "@/components/board/ReservationModal.vue";
@@ -162,14 +161,14 @@ export default {
     const store = useBoardStore();
     const gameStore = useGameInfoStore();
     const userStore = useUserStore();
-    const profileStore = useProfileStore();
+    const profileStore = useProfileStore(); // 프로필 스토어 사용
     const route = useRoute();
     const router = useRouter();
 
     const { gameInfos, fetchAllGameInfos } = gameStore;
     const { getUserById, userList, getAllUsers, getReservationsByGameId } =
       userStore;
-    const { profile, fetchProfile } = profileStore;
+    const { fetchAllProfiles, profiles } = profileStore; // 프로필 스토어에서 필요한 함수와 변수 가져오기
 
     const reservations = ref([]);
     const requests = ref([]);
@@ -189,6 +188,9 @@ export default {
       await store.fetchRequests(store.board.postId);
       requests.value =
         JSON.parse(sessionStorage.getItem("reservation_requests")) || [];
+
+      // 모든 사용자의 프로필 이미지 가져오기
+      await fetchAllProfiles();
     });
 
     const deleteReservation = async (reservationId) => {
@@ -302,9 +304,14 @@ export default {
     };
 
     const getUserProfileImage = (userId) => {
-      return profile && profile.userId === userId
-        ? `data:image/jpeg;base64,${profile.profileImg}`
-        : null;
+      const userProfile = profiles.find((profile) => profile.userId === userId);
+      if (userProfile) {
+        console.log(`User ID: ${profiles}, Profile Image: Found`);
+        return `data:image/jpeg;base64,${userProfile.profileImg}`;
+      } else {
+        console.log(`User ID: ${profiles}, Profile Image: Not Found`);
+        return "@/assets/basic.png";
+      }
     };
 
     const reportPost = () => {
@@ -315,6 +322,7 @@ export default {
       store,
       gameStore,
       userStore,
+      profileStore, // 프로필 스토어 반환
       route,
       router,
       reservations,

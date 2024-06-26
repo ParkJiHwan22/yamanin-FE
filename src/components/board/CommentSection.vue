@@ -24,22 +24,19 @@
     >
       <div class="flex">
         <img
-          src="https://sports-phinf.pstatic.net/team/kbo/default/LT.png?type=f108_108"
-          alt=""
-          width="56"
-          height="56"
+          :src="getUserProfileImage(comment.userId2)"
+          alt="Profile Image"
+          class="w-10 h-10 rounded-full me-2 transition-transform transform hover:scale-125"
+          @click="goToUserProfile(comment.userId2)"
         />
         <div class="px-3">
           <p
             class="text-md cursor-pointer"
-            v-if="!comment.editing"
             @click="goToUserProfile(comment.userId2)"
           >
             {{ getNickName(comment.userId2) }}
           </p>
-          <p class="text-xs" v-if="!comment.editing">
-            {{ comment.updatedDate }}
-          </p>
+          <p class="text-xs">{{ comment.updatedDate }}</p>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-2">
@@ -156,7 +153,6 @@ const addNewComment = async () => {
     };
     await addComment(newCommentData);
     newComment.value = "";
-    window.location.reload();
   }
 };
 
@@ -186,6 +182,11 @@ const goToUserProfile = (userId2) => {
     setUser(selectedUser);
     router.push(`/profile/${userId2}`);
   }
+};
+
+const getUserProfileImage = (userId2) => {
+  const user = userList.find((user) => user.userId === userId2);
+  return user ? `data:image/jpeg;base64,${user.profileImg}` : null;
 };
 </script>
 
